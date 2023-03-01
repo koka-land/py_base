@@ -1,4 +1,9 @@
+'''
+https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=5449
+'''
+
 sp = []
+
 for i in range(1000):
     s = bin(i)[3:]
     if s.count('1') % 2 == 0:
