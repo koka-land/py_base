@@ -1,5 +1,6 @@
 # py_base
 Большой сборник задач и решений.
+* [Справочник](https://github.com/koka-land/py_base/wiki)
 
 ## -alg
 Алгоритмы и наработки
