@@ -2,7 +2,7 @@
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6058
 '''
 
-f = open('txt/24-247.txt', 'r')
+f = open('files/24-247.txt', 'r')
 maxdl = 1
 maxcount = 1
 s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
