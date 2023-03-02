@@ -1,9 +1,9 @@
 # py_base
 Большой сборник задач и решений.
-* [Справочник](https://github.com/koka-land/py_base/wiki)
+[Содержание](https://github.com/koka-land/py_base/wiki/%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5)
 
 ## -alg
-Алгоритмы и наработки
+[Алгоритмы](https://github.com/koka-land/py_base/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D1%8B)
 
 ## -kege
 Решение реальных вариантов ОГЭ и ЕГЭ
