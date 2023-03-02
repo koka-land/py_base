@@ -2,7 +2,7 @@
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=5879
 '''
 
-f = open('files/27-129b.txt', 'r')
+f = open('files/27-129a.txt', 'r')
 sp = []
 max_sum = 0
 n = int(f.readline())
@@ -32,5 +32,4 @@ for st in range (n-1):
     sp.pop(0)
 
 print(max_sum)
-print(summ)
 
