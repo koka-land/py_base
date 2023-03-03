@@ -1,3 +1,7 @@
+'''
+https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=5991
+'''
+
 def inv(x):
     res = ''
     for i in x:
