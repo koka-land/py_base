@@ -19,4 +19,4 @@
 ## -statgrad
 Решение задач СтатГрад.
 
-<button type="button" class="btn btn-primary">Primary</button>
+<a href="#" class="link-primary">Primary link</a>
