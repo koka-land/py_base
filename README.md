@@ -49,5 +49,5 @@
 [27](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_27)
 
 ## -statgrad
-Решение задач СтатГрад.
+Решение вариантов СтатГрад.
 
