@@ -15,6 +15,7 @@
 
 ## -kpolyakov.spb.ru
 Решение задач ОГЭ и ЕГЭ с сайта Константина Полякова.
+ЕГЭ: [5](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_05)
 
 ## -statgrad
 Решение задач СтатГрад.
