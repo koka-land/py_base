@@ -24,13 +24,13 @@
 [5](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_05)
 6
 7
-8
+[8](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_08)
 9
 10
 11
-12
+[12](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_12)
 13
-14
+[14](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_14)
 15
 16
 17
@@ -38,12 +38,12 @@
 19
 20
 21
-22
+[22](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_22)
 23
-24
+[24](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_24)
 25
 26
-27
+[27](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_27)
 
 ## -statgrad
 Решение задач СтатГрад.
