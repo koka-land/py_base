@@ -16,6 +16,9 @@
 ## -kpolyakov.spb.ru
 Решение задач ОГЭ и ЕГЭ с сайта Константина Полякова.
 
+ОГЭ
+[15](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_9/t_15)
+
 ЕГЭ: 
 1
 2
