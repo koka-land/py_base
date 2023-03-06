@@ -11,6 +11,5 @@ for n in range(500000000):
         sp.append(1 + sp[n - 1])
     if (n > 0) and (n % 2 == 0):
         sp.append(sp[n // 2])
-    print(n, sp[n])
 
 print(sp.count(3))
