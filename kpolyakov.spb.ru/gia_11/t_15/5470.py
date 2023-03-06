@@ -23,14 +23,15 @@ for x in range(250, 830):
 print(k)
 
 print('Решение №2')
-c=[]
+c = []
 def f(x,y,z):
     if x<=y<=z:
         return True
     else:
         return False
-for a in range(254,823):
-    for b in range(a+1,824):
-        if all((f(254,x,800) and (not(f(a,x,b))))<=f(410,x,823) for x in range(200,1000)):
-            c.append(b-a)
-print(min(c) + 1 ) #+1 пишем, потому что число x может быть нецелым, и нужно расширить отрезок на 1 точку вправо, невключая ее
+
+for a in range(254, 823):
+    for b in range(a + 1, 824):
+        if all((f(254, x, 800) and (not(f(a, x, b))))<=f(410, x, 823) for x in range(200, 1000)):
+            c.append(b - a)
+print(min(c) + 1) #+1 пишем, потому что число x может быть нецелым, и нужно расширить отрезок на 1 точку вправо, невключая ее
