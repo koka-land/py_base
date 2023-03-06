@@ -6,5 +6,4 @@ def F(n):
     if (n > 2) and (n % 2 != 0):
         return F(n - 2) + 2 * n
 
-
 print(F(21) - F(19))
