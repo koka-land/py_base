@@ -24,8 +24,8 @@ print(k)
 
 print('Решение №2')
 c = []
-def f(x,y,z):
-    if x<=y<=z:
+def f(x, y, z):
+    if x <= y <= z:
         return True
     else:
         return False
