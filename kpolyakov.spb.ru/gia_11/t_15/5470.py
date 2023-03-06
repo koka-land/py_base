@@ -23,6 +23,7 @@ for x in range(250, 830):
 print(k)
 
 print('Решение №2')
+
 c = []
 def f(x, y, z):
     if x <= y <= z:
