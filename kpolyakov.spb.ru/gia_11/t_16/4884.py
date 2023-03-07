@@ -20,7 +20,6 @@ def prime(n):
         else:
             return False
 
-
 # Решение через рекурсию (долго)
 
 def F(n):
