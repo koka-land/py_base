@@ -1,5 +1,6 @@
 '''
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6074
+*by Aldoshin Nikita
 '''
 
 from itertools import *
