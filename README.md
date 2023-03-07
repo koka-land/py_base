@@ -51,4 +51,4 @@
 ## -statgrad
 Решение вариантов СтатГрад.
 
-[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=koka-land)](https://github.com/koka-land/github-readme-stats)
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=koka-land&layout=compact)]
