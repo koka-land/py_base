@@ -21,7 +21,7 @@
 
 ЕГЭ: 
 1 |
-2 |
+[2](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_02) |
 3 |
 4 |
 [5](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_05) |
