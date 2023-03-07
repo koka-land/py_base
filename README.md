@@ -51,4 +51,4 @@
 ## -statgrad
 Решение вариантов СтатГрад.
 
-[Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=koka-land&layout=compact)
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=koka-land&layout=compact)]()
