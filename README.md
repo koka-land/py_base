@@ -35,7 +35,7 @@
 13 |
 [14](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_14) |
 [15](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_15) |
-16 |
+[16](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_16) |
 17 |
 18 |
 19 |
