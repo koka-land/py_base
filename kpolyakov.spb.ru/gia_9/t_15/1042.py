@@ -11,4 +11,3 @@ while a > 0:
         count += a
 
 print(count)
-

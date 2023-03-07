@@ -24,7 +24,8 @@ c = []
 
 for a in  range(25, 50):
     for b in  range(a+1, 51):
-        if all((not(F(a, b, x)) <= (not(F(25, 50, x)))) <= (F(a, b, x) <= F(32, 47, x)) for x in range(1, 100)):
+        if all((not(F(a, b, x)) <= (not(F(25, 50, x)))) <= (F(a, b, x) <= F(32, 47, x)) for x in
+               range(1, 100)):
             c.append(b - a)
             
 print(max(c))
