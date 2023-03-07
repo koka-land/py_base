@@ -10,7 +10,7 @@ for P in range(2):
         for A in range(2):
             print (P, Q, A, (P and not(A)) <= Q)
 
-#Решение 1            
+#Решение 1
             
 P = set(range(254, 801))
 Q = set(range(410, 824))

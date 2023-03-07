@@ -1,4 +1,4 @@
-#1 способ
+#Способ 1
 
 s = ''
 
@@ -7,7 +7,7 @@ for i in range(ord('A'), ord('Z') + 1):
 
 print(s)
 
-#2 способ
+#Способ 2
 
 import string
 
