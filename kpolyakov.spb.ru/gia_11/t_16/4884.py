@@ -2,7 +2,6 @@
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=4884
 '''
 
-
 def prime(n):
     if n == 1:
         return False
@@ -31,7 +30,6 @@ def F(n):
         return 2 * F(n - 1) + F(n - 2)
     if (n > 1) and (n % 3 != 0):
         return 3 * F(n - 2) + F(n - 1)
-
 
 for n in range(36):
     if prime(F(n)):
