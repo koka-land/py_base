@@ -8,7 +8,7 @@ for i in f:
     sp = sorted(list(map(int, i.split())))
     sum = sum + sp[2]
     min_m = sp[2] - sp[0]
-    min_s = (sp[2] - sp[1]
+    min_s = sp[2] - sp[1]
     if (min_m < min) and (min_m % 91 != 0):
         min = min_m
     if (min_s < min) and (min_s % 91 != 0):
