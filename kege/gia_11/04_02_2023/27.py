@@ -7,10 +7,12 @@ n = f.readline()
 for i in f:
     sp = sorted(list(map(int, i.split())))
     sum = sum + sp[2]
-    if ((sp[2] - sp[0]) < min) and ((sp[2] - sp[0]) % 91 != 0):
-        min = sp[2] - sp[0]
-    if ((sp[2] - sp[1]) < min) and ((sp[2] - sp[1]) % 91 != 0):
-        min = sp[2] - sp[1]
+    min_m = sp[2] - sp[0]
+    min_s = sp[2] - sp[1]
+    if (min_m < min) and (min_m % 91 != 0):
+        min = min_m
+    if (min_s < min) and (min_s % 91 != 0):
+        min = min_s
 
 if sum % 91 != 0:
     print(sum)
