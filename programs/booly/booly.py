@@ -13,6 +13,7 @@ def result():
 def input_var(e):
     x = str(e.widget)[2::]
     res = equation_input.cget("text")
+
     if x == 'button':
         equation_input.configure(text=res + 'w')
     if x == 'button2':
@@ -36,6 +37,9 @@ def input_var(e):
     if x == 'button11':
         equation_input.configure(text=res + chr(172))
 
+def input_delete():
+    res = equation_input.cget("text")[:-1]
+    equation_input.configure(text=res)
 
 def input_clear():
     res = ''
@@ -67,7 +71,7 @@ subheader_line2.place(x=210, y=63)
 equation_intro = Label(w_booly, text="Автоматическое решение логических уравнений (задание 2 из ЕГЭ)", fg="#11112C", bg='#ECD5BB', font=("Tahoma", 12))
 equation_intro.place(x=30, y=130)
 
-equation_input = Label(w_booly, fg="#11112C", bg='#E9F1F7', font=("Tahoma", 16), width="47")
+equation_input = Label(w_booly, fg="#11112C", bg='#E9F1F7', font=("Tahoma", 16), width="43")
 equation_input.place(x=30, y=170)
 
 btn_w = Button(w_booly, text="w", width=3, fg="#11112C", font=("Tahoma", 16))
@@ -130,6 +134,10 @@ btn_result.place(x=30, y=360)
 
 btn_clear = Button(w_booly, text="C", command=input_clear, width=3, fg="#11112C", font=("Tahoma", 16))
 btn_clear.place(x=620, y=165)
+
+btn_clear = Button(w_booly, text="\u2190", command=input_delete, width=3, fg="#11112C",
+                   font=("Tahoma", 16))
+btn_clear.place(x=570, y=165)
 
 w_booly.mainloop()
 
