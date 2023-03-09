@@ -5,6 +5,8 @@ def result():
     a = equation_input.cget("text")
     if chr(172) in a:
         a = a.replace(chr(172), 'not')
+    if 'notx' in a:
+        a = a.replace('notx', 'not(x)')
     for x in range(2):
         for y in range(2):
             exec("a = " + str(a) + "\nprint(a)")
@@ -101,7 +103,7 @@ btn_c.place(x=80, y=260)
 btn_or = Button(w_booly, text="or", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_or.bind('<Button-1>', input_var)
 btn_or.pack()
-btn_or.place(x=30, y=310)
+btn_or.place(x=130, y=310)
 
 btn_and = Button(w_booly, text="and", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_and.bind('<Button-1>', input_var)
@@ -111,17 +113,17 @@ btn_and.place(x=80, y=310)
 btn_imp = Button(w_booly, text="\u2192", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_imp.bind('<Button-1>', input_var)
 btn_imp.pack()
-btn_imp.place(x=130, y=310)
+btn_imp.place(x=180, y=310)
 
 btn_eq = Button(w_booly, text="\u2261", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_eq.bind('<Button-1>', input_var)
 btn_eq.pack()
-btn_eq.place(x=180, y=310)
+btn_eq.place(x=230, y=310)
 
 btn_not = Button(w_booly, text=chr(172), width=3, fg="#11112C", font=("Tahoma", 16))
 btn_not.bind('<Button-1>', input_var)
 btn_not.pack()
-btn_not.place(x=230, y=310)
+btn_not.place(x=30, y=310)
 
 btn_result = Button(w_booly, text="Составить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=result)
 btn_result.place(x=30, y=360)
