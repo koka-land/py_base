@@ -2,9 +2,11 @@ from tkinter import *
 from tkinter import ttk
 
 def result():
+    a = equation_input.cget("text")
+    if chr(172) in a:
+        a = a.replace(chr(172), 'not')
     for x in range(2):
         for y in range(2):
-            a = equation_input.cget("text")
             exec("a = " + str(a) + "\nprint(a)")
 def input_var(e):
     x = str(e.widget)[2::]
