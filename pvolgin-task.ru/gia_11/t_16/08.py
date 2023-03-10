@@ -11,6 +11,7 @@ def prime(x):
 
 def sum_num(x):
     return sum(map(int, str(x)))
+
 def f(n):
     if n <= 1:
         return 1
@@ -22,6 +23,7 @@ def f(n):
 count = 0
 
 for i in range(2, 36):
+    #print(i, f(i), sum_num(f(i)), prime(sum_num(f(i))))
     if prime(sum_num(f(i))):
         count += 1
 
