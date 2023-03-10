@@ -11,6 +11,7 @@ def prime(x):
 
 def sum_num(x):
     return sum(map(int, str(x)))
+
 def f(n):
     if n <= 1:
         return 1
