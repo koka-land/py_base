@@ -8,6 +8,7 @@ def prime(x):
         return True
     else:
         return False
+    
 def f(n):
     if n == 0:
         return 1
