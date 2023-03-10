@@ -4,7 +4,7 @@ def prime(x):
         if x % i == 0:
             f = 1
             break
-    if f == 0:
+    if (f == 0) and (x != 1):
         return True
     else:
         return False
@@ -20,6 +20,6 @@ count = 0
 for i in range(1, 201):
     if prime(f(i)) == True:
         count += 1
-        #print(i, f(i))
+        print(i, f(i))
 
 print(count)
