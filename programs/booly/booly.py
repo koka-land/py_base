@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+from itertools import product
+
 
 def result():
     a = equation_input.cget("text")
@@ -7,7 +9,13 @@ def result():
         a = a.replace(chr(172), 'not')
     if 'notx' in a:
         a = a.replace('notx', 'not(x)')
-    for x in range(2):
+    vari = list(set(''.join(x for x in a if x in 'wxyz')))
+    print(vari, len(vari))
+
+    #for ''' тут беда ''' in product([0, 1], repeat=len(vari)):
+        #print(iterator)
+        #exec("a = " + str(a) + "\nprint(a)")
+    for w in range(2):
         for y in range(2):
             exec("a = " + str(a) + "\nprint(a)")
 def input_var(e):
