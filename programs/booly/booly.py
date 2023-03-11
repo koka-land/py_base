@@ -1,23 +1,53 @@
 from tkinter import *
-from tkinter import ttk
 from itertools import product
 
+class BoolVar:
+    def __init__(self, value):
+        self.value = value
+        # print("INIT =", value)
+
+    def __neg__(self):
+        return BoolVar(not self.value)
+
+    def __add__(self, other):
+        return BoolVar(self.value or other.value)
+
+    def __mul__(self, other):
+        return BoolVar(self.value and other.value)
+
+    def __gt__(self, other):
+        return BoolVar((not self.value) or other.value)
+
+    def __eq__(self, other):
+        return BoolVar(self.value == other.value)
+
+    def __str__(self):
+        return "True" if self.value else "False"
+
+    def __format__(self, format_spec):
+        return format(str(self), format_spec)
 
 def result():
     a = equation_input.cget("text")
     if chr(172) in a:
-        a = a.replace(chr(172), 'not')
-    if 'notx' in a:
-        a = a.replace('notx', 'not(x)')
+        a = a.replace(chr(172), '-')
+    if 'or' in a:
+        a = a.replace('or', '+')
+    if 'and' in a:
+        a = a.replace('and', '*')
+    if '\u2192' in a:
+        a = a.replace('\u2192', '>')
+    print(a)
     vari = list(set(''.join(x for x in a if x in 'wxyz')))
-    print(vari, len(vari))
 
-    #for ''' тут беда ''' in product([0, 1], repeat=len(vari)):
-        #print(iterator)
-        #exec("a = " + str(a) + "\nprint(a)")
-    for w in range(2):
-        for y in range(2):
-            exec("a = " + str(a) + "\nprint(a)")
+    vari_for_eval = {}
+    for v in range(1 << len(vari)):
+        for i, key in reversed(list(enumerate(reversed(vari)))):
+            vari_for_eval[key] = BoolVar(v & (1 << i))
+            print(f" {vari_for_eval[key]:<5}", end=" |")
+        result = eval(a, {}, vari_for_eval)
+        print(f" | {result:<5}")
+
 def input_var(e):
     x = str(e.widget)[2::]
     res = equation_input.cget("text")
