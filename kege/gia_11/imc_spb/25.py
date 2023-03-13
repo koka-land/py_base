@@ -1,7 +1,4 @@
-a = 3052
-
-while a <= 10**10:
-    a += 3052
-    s = str(a)
-    if s[0] == '1' and s[-1] == '4' and s[2:6] == '2139':
-        print(a, a // 3052)
+for i in range(3052, 10**10 + 1, 3052):
+    i = str(i)
+    if i[0] == '1' and i[2:6] == '2139' and i[-1] == '4':
+        print(i, int(i) // 3052)

@@ -1,7 +1,4 @@
-a = 159
-
-while a <= 10 ** 7:
-    a = a + 159
-    b = str(a)
-    if (b[0] == '2') and (b[2] == '1') and (b[-2] == '6') and (b[-1] == '7'):
-        print(b, a // 159)
+for i in range(159, 10**7 + 1, 159):
+    i = str(i)
+    if i[0] == '2' and i[2] == '1' and i[-1] == '7' and i[-2] == '6':
+        print(i, int(i) // 159)
