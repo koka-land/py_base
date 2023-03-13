@@ -15,15 +15,15 @@ def sum_num(x):
 def f(n):
     if n <= 1:
         return 1
-    if (n % 2 == 0) and (n > 1):
-        return 11 * n + f(n - 1)
-    if (n % 2 == 1) and (n > 1):
-        return f(n - 2) * 11 + n
+    if (n % 3 == 0) and (n > 1):
+        return 2 * f(n - 1) + f(n - 2)
+    if (n % 3 != 0) and (n > 1):
+        return 3 * f(n - 2) + f(n - 1)
 
 count = 0
 
 for i in range(2, 36):
-    №print(i, f(i), sum_num(f(i)), prime(sum_num(f(i))))
+    #print(i, f(i), sum_num(f(i)), prime(sum_num(f(i))))
     if prime(sum_num(f(i))):
         count += 1
 

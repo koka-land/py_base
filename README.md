@@ -48,7 +48,7 @@
 26 |
 [27](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_27)
 
-## -kpolyakov.spb.ru
+## -pvolgin-task.ru
 Решение задач ОГЭ и ЕГЭ с сайта Павла Волгина.
 
 ## -statgrad
