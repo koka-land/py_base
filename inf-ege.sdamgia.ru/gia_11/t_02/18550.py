@@ -11,5 +11,5 @@ for a1, a2, a3 in product([0, 1], repeat=3):
     table=[(a1, 1, 0, 0), (0, 0, 0, 1), (0, 1, a2, a3)]
     if len(table) == len(set(table)):
         for p in permutations('xyzw'):
-            if [f(**dict(zip(p, r))) for r in table]==[1, 1, 1]:
+            if [f(**dict(zip(p, r))) for r in table] == [1, 1, 1]:
                 print(p)
