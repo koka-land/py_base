@@ -3,7 +3,7 @@ https://inf-ege.sdamgia.ru/problem?id=26986
 *by Aldoshin Nikita
 '''
 
-s='7'*40+'9'*40+'4'*50
+s = '7' * 40 + '9' * 40 + '4' * 50
 
 while ('49' in s)or ('97'in s)or('47'in s):
     if ('47' in s):
