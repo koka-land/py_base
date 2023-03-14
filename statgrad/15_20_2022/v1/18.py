@@ -12,6 +12,7 @@ for i in range(len(table)):
         table_energy[i].append(0)
 
 table_energy[0][0] = table[0][0]
+
 for i in range(1, len(table[0])):
     table_energy[0][i] = table_energy[0][i-1] + table[0][i]
 
@@ -52,8 +53,5 @@ if table[0][0] % 2 != 0:
 print(table_energy[len(table)-1][len(table)-1])
 print(dist)
 print(count)
-
-
-
 
 
