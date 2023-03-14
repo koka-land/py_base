@@ -3,7 +3,7 @@ https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6111
 *by Aldoshin Nikita
 '''
 
-from itertools import*
+from itertools import *
 
 def f(x, y, z, w):
     return ((z <= w) or (y == w)) and ((x or z) == y)
