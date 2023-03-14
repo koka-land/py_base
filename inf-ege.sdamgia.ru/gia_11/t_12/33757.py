@@ -1,8 +1,7 @@
 '''
-https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6111
+https://inf-ege.sdamgia.ru/problem?id=33757
 *by Aldoshin Nikita
 '''
-
 
 for a in range(0,60):
     for b in range(0,60):
