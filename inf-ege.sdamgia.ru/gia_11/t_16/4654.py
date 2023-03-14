@@ -1,5 +1,5 @@
 '''
-https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6111
+https://inf-ege.sdamgia.ru/problem?id=4654
 *by Aldoshin Nikita
 '''
 
