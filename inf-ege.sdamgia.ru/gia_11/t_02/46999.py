@@ -4,6 +4,7 @@ https://inf-ege.sdamgia.ru/problem?id=46999
 
 from itertools import*
 
+
 def f(x, y, z, w):
     return (x==(y <= z)) and ((not(w)) <= (x == y))
 
