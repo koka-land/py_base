@@ -8,7 +8,6 @@ for i in f:
     sum += int(i)
 
 sp.sort(reverse=True)
-print(sp)
 
 min_sum = 0
 max_sum = 0
