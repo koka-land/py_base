@@ -12,4 +12,4 @@ while a != 0:
     a //=6
     s = s[::-1]
 
-    print(s.count('5'))
+print(s.count('5'))
