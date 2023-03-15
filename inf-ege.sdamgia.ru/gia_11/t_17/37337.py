@@ -14,4 +14,4 @@ for i in range (len(l) -1):
             c += 1
             m = max(m, l[i] + l[j])
 
-print(c,m)
+print(c, m)
