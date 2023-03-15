@@ -3,7 +3,7 @@ https://inf-ege.sdamgia.ru/problem?id=26957
 *by Aldoshin Nikita
 '''
 
-s = '>' + '1'*26 + '2'*10 + '3'*14
+s = '>' + '1' * 26 + '2' * 10 + '3' * 14
 
 while ('>' in s) or ('>2' in s) or ('>3' in s):
     if '>1' in s:
