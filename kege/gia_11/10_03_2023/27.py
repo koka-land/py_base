@@ -1,6 +1,6 @@
 import math
 
-f = open('files/27_A_6760.txt', 'r')
+f = open('files/27_B_6760.txt', 'r')
 n = int(f.readline())
 price = [0] * n
 ds = us = 0
