@@ -6,7 +6,7 @@ https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6111
 from itertools import *
 
 def f(x, y, w, z):
-    return w  or (y <= z) and x
+    return w or (y <= z) and x
 
 for a1, a2, a3, a4, a5, a6 in product([0, 1], repeat=6):
     table = [(a1, a2, 0, 0), (1, 1, a3, a4), (1, a5, a6, 1)]
