@@ -10,4 +10,5 @@ for x in product('ЗИМА', repeat=5):
     s = ''.join(x)
     if s[0] in 'ЗМ' and s[-1] in 'ИА':
         k += 1
-        print(k, s)
+
+print(k)
