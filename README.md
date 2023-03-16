@@ -15,28 +15,28 @@
 
 ЕГЭ: 
 1 |
-2 |
+[2](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_02) |
 3 |
 4 |
-5 |
+[5](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_05) |
 6 |
 7 |
 8 |
 9 |
 10 |
 11 |
-12 |
+[12](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_12) |
 13 |
-14 |
-15 |
-16 |
-17 |
+[14](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_14) |
+[15](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_15) |
+[16](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_16) |
+[17](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_17) |
 18 |
 19 |
 20 |
 21 |
 22 |
-23 |
+[23](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_23) |
 24 |
 25 |
 26 |
@@ -77,7 +77,7 @@
 23 |
 [24](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_24) |
 25 |
-26 |
+[26](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_26) |
 [27](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_27)
 
 ## -pvolgin-task.ru
