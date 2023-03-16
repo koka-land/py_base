@@ -39,18 +39,3 @@ while len(sp) != 0:
     sp.remove(0)
 
 print(c, max15)
-
-    
-        
-
-
-
-
-
-
-
-
-
-
-
-
