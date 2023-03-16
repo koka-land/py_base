@@ -15,7 +15,9 @@ for i in f:
 
 for i in range(n):
   sp[i][0] = int(sp[i][0])
+  
 sp.sort(reverse=True)
+
 while len(sp) != 0:
   c += 1
   tr = sp[0][0]
