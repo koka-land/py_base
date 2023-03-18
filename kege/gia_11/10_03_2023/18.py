@@ -1,4 +1,4 @@
-f = open ('files/18_6753.csv', 'r')
+f = open('files/18_6753.csv', 'r')
 table = []
 table_money = []
 table_ww = []
