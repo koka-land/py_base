@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from itertools import product
 
 class BoolVar:
@@ -29,24 +30,27 @@ class BoolVar:
 
 def result():
     a = equation_input.cget("text")
-    if chr(172) in a:
-        a = a.replace(chr(172), '-')
-    if 'or' in a:
-        a = a.replace('or', '+')
-    if 'and' in a:
-        a = a.replace('and', '*')
-    if '\u2192' in a:
-        a = a.replace('\u2192', '>')
-    print(a)
-    vari = list(set(''.join(x for x in a if x in 'wxyz')))
+    if a.count('(') == a.count(')'):
+        if chr(172) in a:
+            a = a.replace(chr(172), '-')
+        if 'or' in a:
+            a = a.replace('or', '+')
+        if 'and' in a:
+            a = a.replace('and', '*')
+        if '\u2192' in a:
+            a = a.replace('\u2192', '>')
+        vari = list(set(''.join(x for x in a if x in 'wxyz')))
 
-    vari_for_eval = {}
-    for v in range(1 << len(vari)):
-        for i, key in reversed(list(enumerate(reversed(vari)))):
-            vari_for_eval[key] = BoolVar(v & (1 << i))
-            print(f" {vari_for_eval[key]:<5}", end=" |")
-        result = eval(a, {}, vari_for_eval)
-        print(f" | {result:<5}")
+        vari_for_eval = {}
+        print(reversed(list(enumerate(reversed(vari)))))
+        for v in range(1 << len(vari)):
+            for i, key in reversed(list(enumerate(reversed(vari)))):
+                vari_for_eval[key] = BoolVar(v & (1 << i))
+                print(f" {vari_for_eval[key]:<5}", end=" |")
+            result = eval(a, {}, vari_for_eval)
+            print(f" | {result:<5}")
+    else:
+        messagebox.showerror('Ошибка ввода', 'Неравное количество открываюшихся и закрывающихся скобок')
 
 def input_var(e):
     x = str(e.widget)[2::]
@@ -168,14 +172,16 @@ btn_not.pack()
 btn_not.place(x=30, y=310)
 
 btn_result = Button(w_booly, text="Составить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=result)
-btn_result.place(x=30, y=360)
+btn_result.place(x=30, y=410)
 
 btn_clear = Button(w_booly, text="C", command=input_clear, width=3, fg="#11112C", font=("Tahoma", 16))
 btn_clear.place(x=620, y=165)
 
-btn_clear = Button(w_booly, text="\u2190", command=input_delete, width=3, fg="#11112C",
-                   font=("Tahoma", 16))
+btn_clear = Button(w_booly, text="\u2190", command=input_delete, width=3, fg="#11112C", font=("Tahoma", 16))
 btn_clear.place(x=570, y=165)
+
+btn_table = Button(w_booly, text="Заполнить таблицу", width=20, fg="#11112C", font=("Tahoma", 16))
+btn_table.place(x=30, y=360)
 
 w_booly.mainloop()
 
