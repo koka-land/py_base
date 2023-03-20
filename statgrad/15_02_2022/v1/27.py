@@ -1,5 +1,5 @@
 # Программа для файла А
-f = open('files/27-B.txt', 'r')
+f = open('files/27-A.txt', 'r')
 n = int(f.readline())
 sp = []
 count = 0
