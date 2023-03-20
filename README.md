@@ -76,9 +76,9 @@
 [16](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_16) |
 17 |
 18 |
-19 |
-20 |
-21 |
+[19](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_19) |
+[20](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_20) |
+[21](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_21) |
 [22](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_22) |
 23 |
 [24](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_24) |
