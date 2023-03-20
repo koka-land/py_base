@@ -40,9 +40,9 @@ def result():
         if '\u2192' in a:
             a = a.replace('\u2192', '>')
         vari = list(set(''.join(x for x in a if x in 'wxyz')))
+        print(vari)
 
         vari_for_eval = {}
-        print(reversed(list(enumerate(reversed(vari)))))
         for v in range(1 << len(vari)):
             for i, key in reversed(list(enumerate(reversed(vari)))):
                 vari_for_eval[key] = BoolVar(v & (1 << i))
