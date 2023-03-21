@@ -60,9 +60,12 @@ def input_var(e):
     res = equation_input.cget("text")
 
     if x == 'button':
-        equation_input.configure(text=res + 'w')
+        if btn_w["state"] != DISABLED:
+            equation_input.configure(text=res + 'w')
+            btn_w["state"] = DISABLED
     if x == 'button2':
         equation_input.configure(text=res + 'x')
+        btn_x["state"] = DISABLED
     if x == 'button3':
         equation_input.configure(text=res + 'y')
     if x == 'button4':
@@ -121,57 +124,46 @@ equation_input.place(x=30, y=170)
 
 btn_w = Button(w_booly, text="w", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_w.bind('<Button-1>', input_var)
-btn_w.pack()
 btn_w.place(x=30, y=210)
 
 btn_x = Button(w_booly, text="x", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_x.bind('<Button-1>', input_var)
-btn_x.pack()
 btn_x.place(x=80, y=210)
 
 btn_y = Button(w_booly, text="y", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_y.bind('<Button-1>', input_var)
-btn_y.pack()
 btn_y.place(x=130, y=210)
 
 btn_z = Button(w_booly, text="z", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_z.bind('<Button-1>', input_var)
-btn_z.pack()
 btn_z.place(x=180, y=210)
 
 btn_o = Button(w_booly, text="(", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_o.bind('<Button-1>', input_var)
-btn_o.pack()
 btn_o.place(x=30, y=260)
 
 btn_c = Button(w_booly, text=")", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_c.bind('<Button-1>', input_var)
-btn_c.pack()
 btn_c.place(x=80, y=260)
 
 btn_or = Button(w_booly, text="or", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_or.bind('<Button-1>', input_var)
-btn_or.pack()
 btn_or.place(x=130, y=310)
 
 btn_and = Button(w_booly, text="and", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_and.bind('<Button-1>', input_var)
-btn_and.pack()
 btn_and.place(x=80, y=310)
 
 btn_imp = Button(w_booly, text="\u2192", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_imp.bind('<Button-1>', input_var)
-btn_imp.pack()
 btn_imp.place(x=180, y=310)
 
 btn_eq = Button(w_booly, text="\u2261", width=3, fg="#11112C", font=("Tahoma", 16))
 btn_eq.bind('<Button-1>', input_var)
-btn_eq.pack()
 btn_eq.place(x=230, y=310)
 
 btn_not = Button(w_booly, text=chr(172), width=3, fg="#11112C", font=("Tahoma", 16))
 btn_not.bind('<Button-1>', input_var)
-btn_not.pack()
 btn_not.place(x=30, y=310)
 
 btn_result = Button(w_booly, text="Составить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=result)
@@ -187,7 +179,3 @@ btn_table = Button(w_booly, text="Заполнить таблицу", width=20, 
 btn_table.place(x=30, y=360)
 
 w_booly.mainloop()
-
-'''
-
-'''
