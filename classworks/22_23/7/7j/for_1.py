@@ -9,3 +9,4 @@ for i in range(n):
     summ += a
     proiz *= a
 print('Сумма:', summ)
+print('Произведение:', proiz)
