@@ -30,27 +30,30 @@ class BoolVar:
 
 def result():
     a = equation_input.cget("text")
-    if a.count('(') == a.count(')'):
-        if chr(172) in a:
-            a = a.replace(chr(172), '-')
-        if 'or' in a:
-            a = a.replace('or', '+')
-        if 'and' in a:
-            a = a.replace('and', '*')
-        if '\u2192' in a:
-            a = a.replace('\u2192', '>')
-        vari = list(set(''.join(x for x in a if x in 'wxyz')))
-        print(vari)
-
-        vari_for_eval = {}
-        for v in range(1 << len(vari)):
-            for i, key in reversed(list(enumerate(reversed(vari)))):
-                vari_for_eval[key] = BoolVar(v & (1 << i))
-                print(f" {vari_for_eval[key]:<5}", end=" |")
-            result = eval(a, {}, vari_for_eval)
-            print(f" | {result:<5}")
+    if ' )' in a or '()' in a:
+        messagebox.showerror('Ошибка ввода', 'Проверьте правильность записи выражения')
     else:
-        messagebox.showerror('Ошибка ввода', 'Неравное количество открываюшихся и закрывающихся скобок')
+        if a.count('(') == a.count(')'):
+            if chr(172) in a:
+                a = a.replace(chr(172), '-')
+            if 'or' in a:
+                a = a.replace('or', '+')
+            if 'and' in a:
+                a = a.replace('and', '*')
+            if '\u2192' in a:
+                a = a.replace('\u2192', '>')
+            vari = list(set(''.join(x for x in a if x in 'wxyz')))
+            print(vari)
+
+            vari_for_eval = {}
+            for v in range(1 << len(vari)):
+                for i, key in reversed(list(enumerate(reversed(vari)))):
+                    vari_for_eval[key] = BoolVar(v & (1 << i))
+                    print(f" {vari_for_eval[key]:<5}", end=" |")
+                result = eval(a, {}, vari_for_eval)
+                print(f" | {result:<5}")
+        else:
+            messagebox.showerror('Ошибка ввода', 'Неравное количество открываюшихся и закрывающихся скобок')
 
 def input_var(e):
     x = str(e.widget)[2::]
@@ -107,7 +110,7 @@ header = Label(text="Booly", fg="#2D1016", bg='#ECD5BB', font=("Tahoma", 50))
 header.place(x=30, y=15)
 subheader_line1 = Label(text="Решение логических", fg="#2D1016", bg='#ECD5BB', font=("Tahoma", 12))
 subheader_line1.place(x=210, y=40)
-subheader_line2 = Label(text="уравнений. v.01.01", fg="#2D1016", bg='#ECD5BB', font=("Tahoma", 12))
+subheader_line2 = Label(text="уравнений. v.01.10", fg="#2D1016", bg='#ECD5BB', font=("Tahoma", 12))
 subheader_line2.place(x=210, y=63)
 
 equation_intro = Label(w_booly, text="Автоматическое решение логических уравнений (задание 2 из ЕГЭ)", fg="#11112C", bg='#ECD5BB', font=("Tahoma", 12))
