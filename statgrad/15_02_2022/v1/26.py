@@ -1,4 +1,4 @@
-f = open('files/26.txt', 'r')
+f = open('../files/26.txt', 'r')
 sp = []
 
 for i in f:

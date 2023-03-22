@@ -1,4 +1,4 @@
-f = open('files/18.csv', 'r')
+f = open('../files/18.csv', 'r')
 
 table = []
 table_energy = []
