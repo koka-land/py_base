@@ -19,7 +19,6 @@ b = int(f.readline())
 
 for i in f:
     if abs((a % 17 - b % 17)) == ((a % 4) + (b % 4)):
-        print(a, b, abs((a % 17 - b % 17)), (a % 4) + (b % 4))
         count += 1
         if a + b < min_p:
             min_p = a + b
