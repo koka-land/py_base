@@ -13,7 +13,7 @@ def game(s, h):
 
 answer = []
 
-for s in range(51, 1000):
+for s in range(51, 200):
     if game(s, 1):
         answer.append(s)
 
