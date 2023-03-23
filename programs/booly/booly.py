@@ -85,6 +85,16 @@ def input_var(e):
     if x == 'button11':
         equation_input.configure(text=res + chr(172))
 
+def create_teble():
+    top = Toplevel(w_booly)
+    top.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    top.title("Booly - заполнение таблицы истинности")
+    #button_top_level = Button(top, text='Нажми', command=lambda: label.config(text='Текст из модального окна')).pack()
+    top.transient(w_booly)
+    top.grab_set()
+    top.focus_set()
+    top.wait_window()
+
 def input_delete():
     res = equation_input.cget("text")[:-1]
     equation_input.configure(text=res)
@@ -175,7 +185,7 @@ btn_clear.place(x=620, y=165)
 btn_clear = Button(w_booly, text="\u2190", command=input_delete, width=3, fg="#11112C", font=("Tahoma", 16))
 btn_clear.place(x=570, y=165)
 
-btn_table = Button(w_booly, text="Заполнить таблицу", width=20, fg="#11112C", font=("Tahoma", 16))
+btn_table = Button(w_booly, text="Заполнить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=create_teble)
 btn_table.place(x=30, y=360)
 
 w_booly.mainloop()
