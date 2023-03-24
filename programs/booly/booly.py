@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+import customtkinter
 from itertools import product
 
 class BoolVar:
@@ -187,5 +188,8 @@ btn_clear.place(x=570, y=165)
 
 btn_table = Button(w_booly, text="Заполнить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=create_teble)
 btn_table.place(x=30, y=360)
+
+customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 w_booly.mainloop()
