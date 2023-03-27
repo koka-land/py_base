@@ -1,33 +1,10 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
+from tkinter.ttk import Combobox
+from BoolVar import *
 import customtkinter
 from itertools import product
-
-class BoolVar:
-    def __init__(self, value):
-        self.value = value
-        # print("INIT =", value)
-
-    def __neg__(self):
-        return BoolVar(not self.value)
-
-    def __add__(self, other):
-        return BoolVar(self.value or other.value)
-
-    def __mul__(self, other):
-        return BoolVar(self.value and other.value)
-
-    def __gt__(self, other):
-        return BoolVar((not self.value) or other.value)
-
-    def __eq__(self, other):
-        return BoolVar(self.value == other.value)
-
-    def __str__(self):
-        return "True" if self.value else "False"
-
-    def __format__(self, format_spec):
-        return format(str(self), format_spec)
 
 def result():
     a = equation_input.cget("text")
@@ -86,15 +63,40 @@ def input_var(e):
     if x == 'button11':
         equation_input.configure(text=res + chr(172))
 
-def create_teble():
+def table_settings():
     top = Toplevel(w_booly)
-    top.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    top.configure(bg='#ECD5BB')
+    pos = (w_booly.geometry()).split('+')
+    if int(pos[1]) + 700*2 > screen_width:
+        pw = int(pos[1]) - 500
+    else:
+        pw = int(pos[1]) + 700
+    top.geometry('%dx%d+%d+%d' % (width-200, height/2, pw, int(pos[2])))
     top.title("Booly - заполнение таблицы истинности")
+    top.resizable(False, False)
+    top.lift()
+    top.attributes('-topmost', True)
+    top.after_idle(top.attributes, '-topmost', True)
+
+    entries = []  # создаём пустой список
+    for i in range(5):
+        e = []
+        for b in range(4):
+            combo = Combobox(top, state="readonly", width=5, font=("Helvetica", 12))
+            combo['values'] = (0, 1, '-')
+            combo.current(2)
+            e.append(combo)  # добавляем объект entry в список
+            combo.grid(row=b, column=i)  # располагаем объект в родительском окне
+        entries.append(e)
+
     #button_top_level = Button(top, text='Нажми', command=lambda: label.config(text='Текст из модального окна')).pack()
+    #header_top = Label(top, text="Boolysdf", fg="#2D1016", bg='#ECD5BB', font=("Tahoma", 50))
+    #header_top.place(x=30, y=15)
     top.transient(w_booly)
     top.grab_set()
     top.focus_set()
     top.wait_window()
+
 
 def input_delete():
     res = equation_input.cget("text")[:-1]
@@ -177,7 +179,7 @@ btn_not = Button(w_booly, text=chr(172), width=3, fg="#11112C", font=("Tahoma", 
 btn_not.bind('<Button-1>', input_var)
 btn_not.place(x=30, y=310)
 
-btn_result = Button(w_booly, text="Составить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=result)
+btn_result = Button(w_booly, text="Показать ответ", width=20, fg="#11112C", font=("Tahoma", 16), command=result)
 btn_result.place(x=30, y=410)
 
 btn_clear = Button(w_booly, text="C", command=input_clear, width=3, fg="#11112C", font=("Tahoma", 16))
@@ -186,7 +188,7 @@ btn_clear.place(x=620, y=165)
 btn_clear = Button(w_booly, text="\u2190", command=input_delete, width=3, fg="#11112C", font=("Tahoma", 16))
 btn_clear.place(x=570, y=165)
 
-btn_table = Button(w_booly, text="Заполнить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=create_teble)
+btn_table = Button(w_booly, text="Заполнить таблицу", width=20, fg="#11112C", font=("Tahoma", 16), command=table_settings)
 btn_table.place(x=30, y=360)
 
 w_booly.mainloop()
