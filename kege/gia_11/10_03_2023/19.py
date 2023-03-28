@@ -7,7 +7,7 @@ def game(s, h):
         return 0
     else:
         if h % 2 == 0:
-            return game(s+1, h + 1) or game(s + 4, h + 1) or game(s * 2, h + 1)
+            return game(s + 1, h + 1) or game(s + 4, h + 1) or game(s * 2, h + 1)
         else:
             return game(s + 1, h + 1) and game(s + 4, h + 1) and game(s * 2, h + 1)
 

@@ -17,5 +17,6 @@ for n in range(st, st + 100):
         n = int(n, 2)
     if n in range(st1, en1):
         sp.append(n)
+
 list(set(sp))
 print(len(sp), sp)
