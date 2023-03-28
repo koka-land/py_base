@@ -12,7 +12,8 @@ for i in sp:
 for i in sp:
     for j in i:
         if i.count(j) == 1:
-            if sp_all.count(j) == 45:
+            if sp_all.count(j) == 46:
                 ans += 1
+                break
 
 print(ans)
