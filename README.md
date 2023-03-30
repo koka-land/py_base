@@ -9,10 +9,10 @@
 
 ##  
 
-## -alg
+## alg
 [Алгоритмы](https://github.com/koka-land/py_base/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D1%8B)
 
-## -inf-ege.sdmagia.ru
+## inf-ege.sdmagia.ru
 Решение задач ОГЭ и ЕГЭ с сайта Решу ЕГЭ.
 
 ЕГЭ: 
@@ -44,7 +44,7 @@
 26 |
 27
 
-## -kompege
+## kompege
 Решение реальных вариантов ОГЭ и ЕГЭ
 
 ЕГЭ: 
@@ -57,7 +57,7 @@
 Варинаты от Алексея Богданова:
 [Danov 2301](https://github.com/koka-land/py_base/tree/master/kege/gia_11/danov2302) |
 
-## -kpolyakov.spb.ru
+## kpolyakov.spb.ru
 Решение задач ОГЭ и ЕГЭ с сайта Константина Полякова.
 
 ОГЭ:
@@ -92,7 +92,7 @@
 [26](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_26) |
 [27](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_27)
 
-## -pvolgin-task.ru
+## pvolgin-task.ru
 Решение задач ОГЭ и ЕГЭ с сайта Павла Волгина.
 
 ЕГЭ: 
@@ -124,7 +124,7 @@
 26 |
 27
 
-## -statgrad
+## statgrad
 Решение вариантов СтатГрад.
 
 ЕГЭ: 
