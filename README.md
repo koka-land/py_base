@@ -21,7 +21,7 @@
 [5](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_05) |
 6 |
 7 |
-8 |
+[8](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_08) |
 9 |
 10 |
 11 |
@@ -38,7 +38,7 @@
 22 |
 [23](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_23) |
 24 |
-25 |
+[25](https://github.com/koka-land/py_base/tree/master/inf-ege.sdamgia.ru/gia_11/t_25) |
 26 |
 27
 
@@ -50,6 +50,10 @@
 [04.02.2023](https://github.com/koka-land/py_base/tree/master/kege/gia_11/04_02_2023) |
 [10.03.2023](https://github.com/koka-land/py_base/tree/master/kege/gia_11/10_03_2023) |
 [ИМЦ СПб](https://github.com/koka-land/py_base/tree/master/kege/gia_11/imc_spb) |
+[OpenFIPI 1](https://github.com/koka-land/py_base/tree/master/kege/gia_11/openfipi_1) |
+
+Варинаты от Алексея Богданова:
+[Danov 2301](https://github.com/koka-land/py_base/tree/master/kege/gia_11/danov2302) |
 
 ## -kpolyakov.spb.ru
 Решение задач ОГЭ и ЕГЭ с сайта Константина Полякова.
@@ -74,13 +78,13 @@
 [14](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_14) |
 [15](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_15) |
 [16](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_16) |
-17 |
+[17](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_17) |
 18 |
 [19](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_19) |
 [20](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_20) |
 [21](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_21) |
 [22](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_22) |
-23 |
+[23](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_23) |
 [24](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_24) |
 25 |
 [26](https://github.com/koka-land/py_base/tree/master/kpolyakov.spb.ru/gia_11/t_26) |
