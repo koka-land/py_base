@@ -5,8 +5,6 @@
 
 **По всем вопросам пишите в [Discord](https://discordapp.com/users/414556399830433795/)**
 
-Универсальное ЕГЭ-02: <img alt="Универсальное ЕГЭ-02" src="https://img.shields.io/github/downloads/koka-land/py_base/solution/total?style=for-the-badge&logo=appveyor">
-
 ##  
 
 ## alg
