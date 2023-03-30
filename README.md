@@ -93,5 +93,39 @@
 ## -pvolgin-task.ru
 Решение задач ОГЭ и ЕГЭ с сайта Павла Волгина.
 
+ЕГЭ: 
+1 |
+2 |
+3 |
+4 |
+5 |
+6 |
+7 |
+8 |
+9 |
+10 |
+11 |
+12 |
+13 |
+14 |
+15 |
+[16](https://github.com/koka-land/py_base/tree/master/pvolgin-task.ru/gia_11/t_16) |
+17 |
+18 |
+19 |
+20 |
+21 |
+22 |
+23 |
+24 |
+25 |
+26 |
+27
+
 ## -statgrad
 Решение вариантов СтатГрад.
+
+ЕГЭ: 
+[15.12.2022](https://github.com/koka-land/py_base/tree/master/statgrad/15_12_2022) |
+[14.02.2023](https://github.com/koka-land/py_base/tree/master/statgrad/14_02_2023) |
+[28.03.2023](https://github.com/koka-land/py_base/tree/master/statgrad/28_03_2023) |
