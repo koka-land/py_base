@@ -1,3 +1,5 @@
+#Способ 1
+
 import string
 
 f = open('../files/24.txt', 'r')
@@ -29,3 +31,16 @@ for i in alph:
         ans = sp.count(i)
 
 print(ans)
+
+#Способ 2
+#by Pavel Kudinov
+
+f = open('../files/24.txt', 'r')
+t = ''
+
+for s in f:
+    a = [s[i + 1] for i in range(len(s) - 1) if s[i] == 'A']
+    c = [a.count(i) for i in a]
+    t += ''.join(set(a[i] for i in range(len(c)) if c[i] == max(c)))
+
+print(max(t.count(i) for i in t))
