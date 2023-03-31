@@ -4,13 +4,11 @@ f = open('../files/24.txt', 'r')
 sp = []
 alph = string.ascii_uppercase
 
-f = ['ABAB', 'ACAC','ADAD','AFAFAGAG','AB','ACAVAFAGAHAT']
-
 for i in f:
     vs = []
     max_s = 0
     for j in alph:
-        s = 'A' + j
+        s = 'T' + j
         if i.count(s) > max_s:
             vs = []
             max_s = i.count(s)
@@ -20,8 +18,6 @@ for i in f:
     sp += vs
 
 ans = 0
-
-print(sp)
 
 for i in alph:
     if sp.count(i) > ans:
