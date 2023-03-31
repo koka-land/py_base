@@ -1,3 +1,5 @@
+'''
+
 f = open('../files/22.csv')
 
 sp = [0] + [list(map(int, i.split(';'))) for i in f]
@@ -14,3 +16,4 @@ for i in range(1, len(sp)):
 
 print(len(sp), sp)
 print(len(time), time)
+'''
