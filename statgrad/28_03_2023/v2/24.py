@@ -5,16 +5,21 @@ sp = []
 alph = string.ascii_uppercase
 
 for i in f:
+    s_t = []
     vs = []
     max_s = 0
+    for j in range(len(i) - 1):
+        if i[j] == 'T':
+            s_t.append(i[j] + i[j + 1])
     for j in alph:
         s = 'T' + j
-        if i.count(s) > max_s:
+        if s_t.count(s) > max_s:
+            max_s = s_t.count(s)
             vs = []
-            max_s = i.count(s)
             vs.append(j)
-        elif i.count(s) == max_s:
+        elif s_t.count(s) == max_s:
             vs.append(j)
+
     sp += vs
 
 ans = 0
