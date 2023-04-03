@@ -9,7 +9,7 @@ s = ''
 
 while a != 0:
     s += str(a % 6)
-    a //=6
+    a //= 6
     s = s[::-1]
 
 print(s.count('5'))

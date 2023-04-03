@@ -4,7 +4,7 @@ https://inf-ege.sdamgia.ru/problem?id=46972
 '''
 from collections import Counter
 
-a = 5*343**8 + 4 * 49**12 + 7**14-98
+a = 5 * 343**8 + 4 * 49**12 + 7**14 - 98
 s = ''
 
 while a != 0:
