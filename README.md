@@ -46,14 +46,43 @@
 Решение реальных вариантов ОГЭ и ЕГЭ
 
 ЕГЭ: 
-[03.02.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/03_02_2023) |
-[04.02.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/04_02_2023) |
-[10.03.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/10_03_2023) |
-[ИМЦ СПб](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/imc_spb) |
-[OpenFIPI 1](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/openfipi_1) |
+1 |
+2 |
+3 |
+4 |
+[5](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_05) |
+6 |
+7 |
+8 |
+9 |
+10 |
+11 |
+12 |
+13 |
+14 |
+15 |
+16 |
+17 |
+18 |
+19 |
+20 |
+21 |
+22 |
+23 |
+24 |
+25 |
+26 |
+27 |
+
+Готовые варианты ЕГЭ: 
+[03.02.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/03_02_2023) |
+[04.02.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/04_02_2023) |
+[10.03.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/10_03_2023) |
+[ИМЦ СПб](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/imc_spb) |
+[OpenFIPI 1](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/openfipi_1) |
 
 Варинаты от Алексея Богданова:
-[Danov 2301](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/danov2302) |
+[Danov 2301](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/danov2302) |
 
 ## kpolyakov.spb.ru
 Решение задач ОГЭ и ЕГЭ с сайта Константина Полякова.
