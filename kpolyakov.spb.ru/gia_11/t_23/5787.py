@@ -1,6 +1,7 @@
 '''
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=5787
 '''
+
 def f(x, y, turn):
     if x > y:
         return 0
