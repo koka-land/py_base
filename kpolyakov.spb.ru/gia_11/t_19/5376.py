@@ -1,3 +1,7 @@
+'''
+https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=5376
+'''
+
 def game(s1, s2, h):
     if (h == 3) and (s1 + s2 >= 259):
         return 1

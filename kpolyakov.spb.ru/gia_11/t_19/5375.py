@@ -1,3 +1,7 @@
+'''
+https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=5375
+'''
+
 def game(s, h):
     if (h == 3) and (s >= 165):
         return 1
