@@ -10,7 +10,7 @@ def f(x, p):
     else:
         f(x - 1, p + 1)
         f(x - 2, p + 1)
-        if x > 0  and x**0.5 == int(x**0.5):
+        if x > 0 and x**0.5 == int(x**0.5):
             f(x**0.5, p + 1)
 
 f(113, 0)
