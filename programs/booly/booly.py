@@ -25,7 +25,7 @@ def result():
 
             vari_for_eval = {}
             for v in range(1 << len(vari)):
-                for i, key in reversed(list(enumerate(reversed(vari)))):
+                for i, key in list(enumerate(reversed(vari))):
                     vari_for_eval[key] = BoolVar(v & (1 << i))
                     print(f" {vari_for_eval[key]:<5}", end=" |")
                 result = eval(a, {}, vari_for_eval)
