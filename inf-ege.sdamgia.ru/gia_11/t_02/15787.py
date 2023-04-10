@@ -13,4 +13,4 @@ for a1, a2, a3, a4, a5, a6, a7 in product([0, 1], repeat=7):
     if len(table) == len(set(table)):
         for p in permutations('xyzw'):
             if [f(**dict(zip(p, r)))for r in table] == [0, 0, 0]:
-                print(*p)
+                print(p)
