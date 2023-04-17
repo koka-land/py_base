@@ -6,7 +6,6 @@ n = int(f.readline())
 
 for i in f:
     s.append(list(map(int, i.split())))
-
 s.sort()
 sp = [0] * k
 
