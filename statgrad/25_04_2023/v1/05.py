@@ -12,8 +12,8 @@ for i in range(10**6):
         r += bin(7)[2::]
     else:
         r += '1'
-    n = int(r, 2)
-    if n < 1728404:
+    r = int(r, 2)
+    if r < 1728404:
         ans.append(i)
 
 print(max(ans))
