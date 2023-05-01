@@ -22,5 +22,6 @@ for i in range (1, len(time)):
     if time[i][1] < 150 < time[i][2]:
         count += 1
 
+print(time)
 print(count)
 
