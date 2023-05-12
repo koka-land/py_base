@@ -14,7 +14,7 @@ max_time = 0
 for i in f:
     sp.append(list(map(int, i.split())))
 
-sp.sort(key = lambda x: x[0])
+sp.sort(key=lambda x: x[0])
 
 for i in sp:
     f = 0
@@ -35,7 +35,7 @@ for i in sp:
     if min(cells) >= 1440:
         break
 
-#print(last_time)
-#print(cells)
-#print(count)
+print(last_time)
+print(cells)
+print(count)
 print(max_time, last_time[count.index(max(count))])

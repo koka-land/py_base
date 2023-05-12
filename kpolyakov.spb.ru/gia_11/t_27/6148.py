@@ -2,6 +2,7 @@
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6148
 '''
 
+# Программа для файла А
 sp = list(map(int, open('files/27-141a.txt').read().split()))
 n, m = sp[0], sp[1]
 max_count = 0
@@ -20,6 +21,7 @@ for j in range(2, n):
 
 print(max_count)
 
+# Программа для файла B
 sp = list(map(int, open('files/27-141b.txt').read().split()))
 n, m = sp[0], sp[1]
 
