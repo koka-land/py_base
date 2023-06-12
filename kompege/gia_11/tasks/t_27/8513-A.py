@@ -6,7 +6,7 @@ for i in f:
     sp.append(int(i))
 max_sum = 0
 for i in range(n - 4):
-    for j in range(i + 4, n - 1):
+    for j in range(i + 4, n):
         max_sum = max(max_sum, sp[i] + sp[j])
 
 print(max_sum)
