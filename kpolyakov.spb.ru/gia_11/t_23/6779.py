@@ -1,5 +1,5 @@
 '''
-https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6111
+https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6779
 *by Kuzmin Andrei
 '''
 
