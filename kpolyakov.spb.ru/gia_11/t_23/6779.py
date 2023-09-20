@@ -15,4 +15,4 @@ def f(st,fin):
     else:
         return f(st - 1, fin) + f(st - 2, fin) + f(st // 3, fin)
 
-print(f(19,3))
+print(f(19, 3))
