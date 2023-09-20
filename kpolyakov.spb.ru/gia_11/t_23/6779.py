@@ -3,7 +3,7 @@ https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6779
 *by Kuzmin Andrei
 '''
 
-def f(st,fin):
+def f(st, fin):
     if st == fin:
         return 1
     elif st < fin:
