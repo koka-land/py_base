@@ -16,6 +16,7 @@ for j in range(1001, 1500):
         s1 += sp[i]
     s2 = sum(sp) - s1
     sp = [min(s1, s2)] + sp + [max(s1, s2)]
+    print(sp)
     sp.reverse()
     otvet = 0
     for i in range(len(sp)):
