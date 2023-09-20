@@ -23,4 +23,5 @@ for j in range(1001, 1500):
         otvet = otvet + sp[i]*45**i
     if otvet < minimum:
         minimum = otvet
+
 print(minimum)
