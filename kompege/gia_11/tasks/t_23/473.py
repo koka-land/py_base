@@ -8,6 +8,6 @@ def f(start, finish):
     elif start == 43:
         return 0
     else:
-        return f(start + 2, finish) + f(start + (start + 1), finish)+ f(start + (start - 1), finish)
+        return f(start + 2, finish) + f(start + (start + 1), finish) + f(start + (start - 1), finish)
 
 print(f(7, 63))
