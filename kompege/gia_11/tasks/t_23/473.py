@@ -1,4 +1,5 @@
 *by Kuzmin Andrei
+
 def f(start, finish):
     if start == finish:
         return 1
