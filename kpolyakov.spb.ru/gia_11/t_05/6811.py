@@ -1,6 +1,7 @@
 '''
 https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6811
 '''
+<<<<<<< HEAD
 
 def v3(x):
     s = '012'
@@ -26,3 +27,5 @@ print(maxn)
 
 
 
+=======
+>>>>>>> a356c7d (Update 06.10.23)
