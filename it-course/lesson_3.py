@@ -1,11 +1,11 @@
 from random import shuffle
 import time
 
-f1 = open('10k-sorted.txt', 'w')
-f2 = open('10k-back_sorted', 'w')
-f3 = open('10k-min-max-min', 'w')
-f4 = open('10k-max-min-max', 'w')
-f5 = open('10k-random', 'w')
+f1 = open('files/10k-sorted.txt', 'w')
+f2 = open('files/10k-back_sorted', 'w')
+f3 = open('files/10k-min-max-min', 'w')
+f4 = open('files/10k-max-min-max', 'w')
+f5 = open('files/10k-random', 'w')
 
 n= 10001
 
