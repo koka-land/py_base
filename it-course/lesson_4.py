@@ -23,4 +23,4 @@ for i in range(25, 1500, 50):
     s5 = time.time()
     sp5.sort()
     e5 = time.time()
-    print('%7s %7s %7s %7s %7s' % ((round(e1 - s1, 4), round(e2 - s2, 4), round(e3 - s3, 4), round(e4 - s4, 4), round(e5 - s5, 4))))
+    print('%7s %7s %7s %7s %7s' % ((round((e1 - s1) * 1000, 4), round((e2 - s2) * 1000, 4), round((e3 - s3) * 1000, 4), round((e4 - s4) * 1000, 4), round((e5 - s5) * 1000, 4))))
