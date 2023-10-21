@@ -107,7 +107,7 @@ class MainWindow(QMainWindow):
         self.try_g += 1
         a = self.input_num.text()
         self.input_num.setText("")
-        self.text.setText(f'Вы ввели число: {a} {self.num}')
+        self.text.setText(f'Вы ввели число: {a}')
         if int(a) > self.num:
             self.text2.setText('Оно больше загаданного')
         elif int(a) < self.num:
