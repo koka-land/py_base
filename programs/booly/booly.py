@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter.ttk import Combobox
 from BoolVar import *
-import customtkinter
+#import customtkinter
 from itertools import product
 
 def result():
