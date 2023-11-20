@@ -3,7 +3,6 @@ https://inf-ege.sdamgia.ru/problem?id=15846
 *by Aldoshin Nikita
 '''
 
-
 for i in range(1, 100):
     c = bin(i)[2::]
     if i % 2 == 0:
