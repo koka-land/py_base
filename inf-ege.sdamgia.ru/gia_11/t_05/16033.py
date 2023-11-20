@@ -3,7 +3,6 @@ https://inf-ege.sdamgia.ru/problem?id=16033
 *by Aldoshin Nikita
 '''
 
-
 for i in range(0,200):
     b = bin(i)[2::]
     b = str(b)
