@@ -53,13 +53,13 @@
 [5](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_05) |
 6 |
 7 |
-8 |
-9 |
+[8](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_08) |
+[9](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_09) |
 10 |
 11 |
-12 |
+[12](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_12) |
 13 |
-14 |
+[14](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_14) |
 15 |
 16 |
 17 |
@@ -68,11 +68,21 @@
 20 |
 21 |
 22 |
-23 |
+[23](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_23) |
 24 |
-25 |
+[25](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_25) |
 26 |
-27 |
+[27](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_27) |
+
+Основные варианты ЕГЭ 2023:
+
+[Вариант 1](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/osnovnaya_1_2023) |
+Вариант 2 |
+[Вариант 3](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/osnovnaya_3_2023) 
+
+Досрочные варианты ЕГЭ 2023:
+[Вариант 1](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/dosrochniy_1_2023) | 
+[Вариант 2](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/dosrochniy_2_2023) |
 
 Готовые варианты ЕГЭ: 
 [03.02.2023](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/03_02_2023) |
