@@ -75,7 +75,6 @@
 [27](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/tasks/t_27) |
 
 Основные варианты ЕГЭ 2023:
-
 [Вариант 1](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/osnovnaya_1_2023) |
 Вариант 2 |
 [Вариант 3](https://github.com/koka-land/py_base/tree/master/kompege/gia_11/task_options/osnovnaya_3_2023) 
