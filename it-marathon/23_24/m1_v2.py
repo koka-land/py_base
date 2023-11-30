@@ -19,7 +19,7 @@ for c in coords:
     for i in range(2):
         c[i] = c[i] * m + nc[i]
 
-max_c = max(c)
+max_c = max(coords)
 
 if max_c <= 500:
     canvas.create_polygon(coords, fill='#BC38D3', outline='#5D016D', width=2)
