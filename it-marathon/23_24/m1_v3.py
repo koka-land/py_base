@@ -59,7 +59,7 @@ ey.place(x=100, y=50)
 em.place(x=100, y=80)
 lf.place(x=20, y=110)
 figs.place(x=125, y=110, width=100)
-but.place(x=20, y=140, width=210)
+but.place(x=20, y=140, width=205)
 message.place(x=20, y=140)
 canvas.place(x=240, y=20)
 
