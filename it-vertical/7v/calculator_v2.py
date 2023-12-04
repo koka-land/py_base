@@ -1,87 +1,47 @@
 from tkinter import *
+from functools import partial
 
-calc = Tk()
+calc = Tk() #Окно программы
 
-width = 300
-height = 500
+width = 300 #Ширина программы
+height = 500 #Выоста программы
 
-screen_width = calc.winfo_screenwidth()
-screen_height = calc.winfo_screenheight()
+screen_width = calc.winfo_screenwidth() #Ширина экрана монитора
+screen_height = calc.winfo_screenheight() #Высота экрана монитора
 
-x = (screen_width/2) - (width/2)
-y = (screen_height/2) - (height/2)
+x = (screen_width/2) - (width/2) #Начало окна программы относитель ширины экрана монитора
+y = (screen_height/2) - (height/2) #Начало окна программы относительно высота экрана монитора
 
-
-calc.title('Калькулятор')
-calc.geometry('%dx%d+%d+%d' % (width, height, x, y))
-calc.resizable(0, 0)
+calc.title('Калькулятор') #Имя окна
+calc.geometry('%dx%d+%d+%d' % (width, height, x, y)) #Размещение окна по центру экрана
+calc.resizable(0, 0) #Блокировка изменений размера окна
 
 def input_var(e):
-    x = str(e.widget)[2::]
-    if x == 'button':
-        screen['text'] = '0'
-    if x == 'button2':
-        screen['text'] = '1'
-    if x == 'button3':
-        screen['text'] = '2'
-    if x == 'button4':
-        screen['text'] = '3'
-    if x == 'button5':
-        screen['text'] = '4'
-    if x == 'button6':
-        screen['text'] = '5'
-    if x == 'button7':
-        screen['text'] = '6'
-    if x == 'button8':
-        screen['text'] = '7'
-    if x == 'button9':
-        screen['text'] = '8'
-    if x == 'button10':
-        screen['text'] = '9'
+    screen['text'] = e
 
-screen = Label(bg="#AFB0EC",
-               width=21,
-               height=2,
-               text='0',
-               anchor="e",
-               fg='#080B74',
-               font=("PT Sans", 20))
+screen = Label(bg="#AFB0EC", #Заливка
+               width=21, #Ширина
+               height=2, #Высота
+               text='0', #Текст
+               anchor="e", #Выравнивание по правому краю
+               fg='#080B74', #Цвет текста
+               font=("PT Sans", 20)) #Шрифт и размер
 
 screen.place(x=0, y=0)
 
-btn_0 = Button(calc, text="0", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_1 = Button(calc, text="1", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_2 = Button(calc, text="2", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_3 = Button(calc, text="3", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_4 = Button(calc, text="4", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_5 = Button(calc, text="5", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_6 = Button(calc, text="6", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_7 = Button(calc, text="7", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_8 = Button(calc, text="8", width=5, fg="#080B74", font=("PT Sans", 16))
-btn_9 = Button(calc, text="9", width=5, fg="#080B74", font=("PT Sans", 16))
+x = 20 #Начальная координата x для кнопок
+y = 430 #Начальная координата y для кнопок
 
-btn_0.bind('<Button-1>', input_var)
-btn_1.bind('<Button-1>', input_var)
-btn_2.bind('<Button-1>', input_var)
-btn_3.bind('<Button-1>', input_var)
-btn_4.bind('<Button-1>', input_var)
-btn_5.bind('<Button-1>', input_var)
-btn_6.bind('<Button-1>', input_var)
-btn_7.bind('<Button-1>', input_var)
-btn_8.bind('<Button-1>', input_var)
-btn_9.bind('<Button-1>', input_var)
+for k in range(10):
+    b = Button(calc, text=str(k), width=5, fg="#080B74", font=("PT Sans", 16),
+               command=partial(input_var, str(k)))
 
-btn_0.place(x=20, y=370)
-btn_1.place(x=20, y=310)
-btn_2.place(x=90, y=310)
-btn_3.place(x=160, y=310)
-btn_4.place(x=20, y=250)
-btn_5.place(x=90, y=250)
-btn_6.place(x=160, y=250)
-btn_7.place(x=20, y=190)
-btn_8.place(x=90, y=190)
-btn_9.place(x=160, y=190)
+    if k == 0 or k % 3 == 1:
+        x = 20
+        y -= 60
+    else:
+        x += 70
 
-
+    b.place(x=x, y=y)
 
 calc.mainloop()
