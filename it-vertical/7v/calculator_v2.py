@@ -17,7 +17,11 @@ calc.geometry('%dx%d+%d+%d' % (width, height, x, y)) #Размещение ок�
 calc.resizable(0, 0) #Блокировка изменений размера окна
 
 def input_var(e):
-    screen['text'] = e
+    if screen['text'] == '0':
+        if e != '0':
+            screen['text'] = e
+    else:
+        screen['text'] = screen['text'] + e
 
 screen = Label(bg="#AFB0EC", #Заливка
                width=21, #Ширина
