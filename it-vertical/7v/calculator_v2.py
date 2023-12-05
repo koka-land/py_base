@@ -17,21 +17,24 @@ calc.geometry('%dx%d+%d+%d' % (width, height, x, y)) #Размещение ок�
 calc.resizable(0, 0) #Блокировка изменений размера окна
 
 def input_var(e):
-    if screen['text'] == '0':
+    if screen_text['text'] == '0':
         if e != '0':
-            screen['text'] = e
+            screen_text['text'] = e
     else:
-        screen['text'] = screen['text'] + e
+        screen_text['text'] = screen_text['text'] + e
 
-screen = Label(bg="#AFB0EC", #Заливка
-               width=21, #Ширина
-               height=2, #Высота
-               text='0', #Текст
-               anchor="e", #Выравнивание по правому краю
-               fg='#080B74', #Цвет текста
-               font=("PT Sans", 20)) #Шрифт и размер
-
-screen.place(x=0, y=0)
+screen_frame = Frame(calc,
+                     bg="#AFB0EC") #Заливка
+screen_text = Label(screen_frame,
+                    bg="#AFB0EC", #Заливка
+                    text='0', #Текст
+                    anchor="e", #Выравнивание по правому краю
+                    fg='#080B74', #Цвет текста
+                    font=("PT Sans", 20)) #Шрифт и размер
+screen_frame.pack(fill=BOTH)
+screen_text.pack(fill=BOTH,
+                 ipady=40,
+                 padx=20)
 
 x = 20 #Начальная координата x для кнопок
 y = 430 #Начальная координата y для кнопок
