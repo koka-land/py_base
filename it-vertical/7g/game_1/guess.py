@@ -26,7 +26,6 @@ button_style.configure("Button.TButton",
                        background='#ECD5BB',
                        foreground='#FF8000',
                        borderwidth=2)
-
 button_style.map('Button.TButton',
                  foreground=[('disabled', '#FF8000'),
                              ('pressed', '#ECD5BB'),
