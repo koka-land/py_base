@@ -5,7 +5,6 @@ https://kpolyakov.spb.ru/school/ege/gen.php?action=viewTopic&topicId=6666
 f = open('files/26-126.txt')
 
 point, place, people = map(int, f.readline().split())
-print(point, place, people)
 
 sp = []
 full = 0
@@ -44,8 +43,6 @@ for i in range(1, point + 1):
                 station.pop(0)
             else:
                 break
-
-    print(i, len(train))
 
 print(luckers, full)
 
