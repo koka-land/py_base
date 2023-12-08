@@ -1,6 +1,18 @@
 from tkinter import *
 from tkinter import ttk
 
+
+
+def info():
+    def close_info():
+        info.destroy()
+
+    info = Frame(game,
+                 bg='#FDF1D8')
+    info.place(x=0, y=0, width=600, height=600)
+
+    close_button = ttk.Button(info, text='Закрыть', command=close_info).place(x=20,y=20)
+
 game = Tk()
 
 width, height = 600, 600
@@ -18,6 +30,14 @@ title_frame.pack(fill=BOTH,
                  ipadx=50,)
 control_frame.pack(fill=BOTH,
                    ipady=10)
+
+info_img = PhotoImage(file='img/help.png')
+
+Button(game,
+       image=info_img,
+       borderwidth=0,
+       bg='#2D1016',
+       command=info).place(x=526, y=10)
 
 button_style = ttk.Style()
 button_style.theme_use('alt')
