@@ -45,4 +45,3 @@ for i in range(1, point + 1):
                 break
 
 print(luckers, full)
-
