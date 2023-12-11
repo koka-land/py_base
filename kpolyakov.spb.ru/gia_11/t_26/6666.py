@@ -17,31 +17,19 @@ sp.sort()
 train = []
 
 for i in range(1, point + 1):
+    station = []
+    while len(sp) != 0 and sp[0][0] == i:
+        station.append(sp[0][1])
+        sp.pop(0)
+    station.sort(reverse=True)
+    while len(train) != 0 and train[0] == i:
+        luckers += 1
+        train.pop(0)
+    while len(train) != place and len(station) != 0:
+        train.append(station[0])
+        station.pop(0)
     if len(train) == place:
         full += 1
     train.sort()
-    station = []
-    if len(sp) != 0:
-        while sp[0][0] == i:
-            station.append(sp[0][1])
-            sp.pop(0)
-            if len(sp) == 0:
-                break
-    station.sort(reverse=True)
-    if len(train) != 0:
-        while train[0] == i:
-            luckers += 1
-            train.pop(0)
-            if len(train) == 0:
-                break
-    while len(train) <= place or len(station) != 0:
-        if len(station) == 0:
-            break
-        else:
-            if len(train) != place:
-                train.append(station[0])
-                station.pop(0)
-            else:
-                break
 
 print(luckers, full)
