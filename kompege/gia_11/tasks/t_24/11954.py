@@ -6,6 +6,8 @@ for i in s:
     x = []
     if i.count('X') >= 500:
         x.append(i.index('X'))
+        print(i)
+        print(i.count(('X')))
         for ix in range(i.count('X') - 1):
             x.append(i.index('X', x[-1] + 1))
         min_x = 10**30
