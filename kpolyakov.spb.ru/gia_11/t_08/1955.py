@@ -10,7 +10,7 @@ for i1 in s:
         for i3 in s:
             for i4 in s:
                 for i5 in s:
-                    o = i1+i2+i3+i4+i5
+                    o = i1 + i2 + i3 + i4 + i5
                     if o.count('М') <= 1:
                         if o.count('Г') <= 1:
                             if o.count('С') <= 1:
