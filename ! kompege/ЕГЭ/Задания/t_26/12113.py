@@ -1,7 +1,6 @@
 f = open('files/26_12113.txt')
 n = int(f.readline())
 sp = []
-sp_c = []
 
 for i in f:
     sp.append([int(i), int(i) % 2])
