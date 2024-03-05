@@ -21,4 +21,4 @@ for i in range(10010, 89, -1):
     else:
         sp_f.append(-(i + sp_f[sp_i.index(i) - 1] + sp_f[sp_i.index(i) - 3]))
 
-print(sp_f[sp_i.index(9996)] - sp_f[sp_i.index(90)])
+print(sp_f[sp_i.index(9996)] - sp_f[sp_i.index(9994)])
