@@ -1,12 +1,12 @@
 def F(S, m):
     if S == 128:
-        return m%2 == 0
+        return m % 2 == 0
     if S > 128:
-        return m%2 == 1
+        return m % 2 == 1
     if m == 0:
         return False
-    array = [F(S+1, m-1), F(S*2, m-1)]
-    if m%2 == 1:
+    array = [F(S + 1, m - 1), F(S * 2, m - 1)]
+    if m % 2 == 1:
         return any(array)
     else:
         return all(array)
