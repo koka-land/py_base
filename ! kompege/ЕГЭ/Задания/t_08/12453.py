@@ -5,6 +5,7 @@ sogl = 'СВТ'
 slova = set()
 
 for i in permutations(s, 7):
+    #slovo = ''.join(i)
     slovo = ''
     for j in i:
         slovo += j
