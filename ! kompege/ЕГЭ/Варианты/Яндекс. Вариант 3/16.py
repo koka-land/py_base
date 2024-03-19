@@ -1,5 +1,3 @@
-import sys
-
 sp = [0] * 2124
 
 for i in range(len(sp) - 1, 0, -1):
@@ -13,6 +11,7 @@ print(len(set(sp)))
 
 #2 способ (рекурсивный)
 
+import sys
 sys.setrecursionlimit(3000)
 from functools import lru_cache
 @lru_cache(maxsize=2000)
