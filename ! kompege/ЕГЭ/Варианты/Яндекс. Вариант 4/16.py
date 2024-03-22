@@ -24,3 +24,22 @@ while f == 0:
         sp.append(a - 7555444)
 
 print(maxx)
+
+#3 способ
+from functools import lru_cache
+@lru_cache(10000)
+
+def f(n):
+    if n == 1:
+        return 2
+    if ((n > 1) and (f(n-1) < 7555444)):
+        return f(n-1) + 6
+    else:
+        return f(n-1) - 7555444
+
+sp = []
+
+for i in range(1, 3000000):
+    sp.append(f(i))
+
+print(max(sp))
