@@ -28,6 +28,7 @@ print(maxx)
 #3 способ
 from functools import lru_cache
 @lru_cache(10000)
+@lru_cache()
 
 def f(n):
     if n == 1:
