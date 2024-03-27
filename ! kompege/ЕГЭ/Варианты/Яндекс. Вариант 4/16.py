@@ -1,3 +1,5 @@
+#1 способ
+
 sp = [0, 2]
 
 for i in range(2, 5000000):
@@ -32,10 +34,10 @@ from functools import lru_cache
 def f(n):
     if n == 1:
         return 2
-    if ((n > 1) and (f(n-1) < 7555444)):
-        return f(n-1) + 6
+    if (n > 1) and (f(n - 1) < 7555444):
+        return f(n - 1) + 6
     else:
-        return f(n-1) - 7555444
+        return f(n - 1) - 7555444
 
 sp = []
 
