@@ -13,3 +13,4 @@ for i in range(len(t) - 101):
         maxx = max(maxx, t[i + 101] - t[i] -1)
 
 print(maxx)
+
