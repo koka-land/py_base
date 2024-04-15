@@ -1,0 +1,1 @@
+s = open('files/27_A.txt').readline()
