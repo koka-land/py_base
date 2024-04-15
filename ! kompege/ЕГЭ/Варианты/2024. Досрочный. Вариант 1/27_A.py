@@ -8,7 +8,6 @@ for i in f:
 	sp.append(list(map(int, i.split())))
 	sp[-1][1] = ceil(sp[-1][1] / 11)
 
-print(sp)
 mincost = 10 ** 10
 
 for i in range(k):
