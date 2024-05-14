@@ -18,7 +18,6 @@ for i in range(3):
 for i in range(2):
     sp.append(int(a[i] + a[i + 1] + a[i + 2]))
 sp.append(int(a))
-print(sp)
 
 max_ = 0
 
