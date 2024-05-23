@@ -18,6 +18,8 @@ for i in f:
 
 print(count)
 
+#2 СПОСОБ
+
 k = 0
 
 for s in open('files/9_16375.csv'):
