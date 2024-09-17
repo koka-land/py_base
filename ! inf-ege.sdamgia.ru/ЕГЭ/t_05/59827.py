@@ -13,7 +13,7 @@ for n in range(1, 100):
     else:
         r  = r + v3((n % 3) * 5)
     r = int(r, 3)
-    if r <= 173:
+    if r <= 173:вй
         max_r = max(max_r, r)
 
 print(max_r)
