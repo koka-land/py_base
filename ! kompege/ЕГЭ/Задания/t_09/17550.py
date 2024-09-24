@@ -12,7 +12,7 @@ with open('files/09_17550.csv') as f:
                     n3 = 1
                     n3_num = i
             if n3 == 1:
-                if (n3_num * 3) ** 2 > (sum(sp) - n3_num * 3) ** 2:
+                if (n3_num * 3)**2 > (sum(sp) - n3_num * 3)**2:
                     ans += 1
 
 print(ans)
