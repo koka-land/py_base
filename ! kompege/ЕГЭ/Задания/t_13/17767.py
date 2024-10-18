@@ -1,6 +1,6 @@
 from ipaddress import *
 
-network = ip_network(f'228.172.224.0/255.255.240.0', 0)
+network = ip_network(f'228.172.236.0/255.255.240.0', 0)
 ans = 0
 
 for ip in network:
