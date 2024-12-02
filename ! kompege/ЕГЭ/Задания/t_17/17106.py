@@ -2,7 +2,7 @@ f = open('files/17_12106.txt')
 sp = []
 m = 10 ** 10
 
-for i in f:
+for i in f:d
     sp.append(int(i))
     if int(i) % 117 == 0 and int(i) > 0:
         m = min(m, int(i))

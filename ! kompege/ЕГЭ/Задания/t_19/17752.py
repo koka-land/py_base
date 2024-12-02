@@ -13,4 +13,4 @@ def game(s, h):
 
 for s in range(1, 54):
     if game(s, 1) == 1:
-        print(s)a
+        print(s)
