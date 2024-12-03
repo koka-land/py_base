@@ -1,4 +1,4 @@
-def v3(x):
+def v2(x):
     s = '01'
     o = ''
 
@@ -12,7 +12,7 @@ ans = []
 
 for N in range(1, 1000):
     #R = bin(N)[2:]
-    R = v3(N)
+    R = v2(N)
     if len(R) % 2 == 0:
         R = R + '1'
     else:
