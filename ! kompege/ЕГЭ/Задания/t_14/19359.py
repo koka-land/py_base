@@ -5,4 +5,4 @@ for x in s:
     b = int('gb' + x + '21670', 22)
     c = a + b
     if c % 21 == 0:
-        print(x, int(x, 22), c // 22)
+        print(x, int(x, 22), c / 22)

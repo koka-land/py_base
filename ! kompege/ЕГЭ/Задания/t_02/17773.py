@@ -5,4 +5,4 @@ for y in range(2):
             for z in range(2):
                 F = (y <= x) and not(w) and z
                 if F == True:
-                    print(y, x, w, z, F)
+                    print(y, x, w, z, int(F))
