@@ -9,3 +9,4 @@ for mask in range(24, 15, -1):
             break
     if f == 0:
         print(int('1' * (mask - 16) + '0' * (8 - (mask - 16)), 2))
+        prin(f'{mask}:b)
