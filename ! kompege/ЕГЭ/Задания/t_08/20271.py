@@ -13,3 +13,20 @@ for i in product(n, repeat=5):
             ans += 1
 
 print(ans)
+
+#2 способ
+
+import string
+from itertools import product
+a = (string.digits + string.ascii_uppercase)[:12]
+nc = a[1::2]
+ans = 0
+
+for i in product(a, repeat=5):
+    s = ''.join(i)
+    for j in nc:
+        s = s.replace(j, '*')
+    if s[0] != '0' and s.count('**') <= 2 and '****' not in s:
+        ans += 1
+
+print(ans)
