@@ -21,7 +21,7 @@ for i in range(ny, len(sp)):
         my += sp[i]
         cy += 1
         cp = sp[i]
-    if m == 0 or sp[ny] > 320:
+    if m - my <= 0 or sp[ny] > 320:
         break
 
 for i in range(ny):
