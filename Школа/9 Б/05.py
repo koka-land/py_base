@@ -12,11 +12,13 @@ max_left = max_right = 0
 for y in range(6):
     for x in range(6):
         if x <= col:
-            max_left = max(max_left, matrix[y][x])
-            left = [y, x]
+            if max_left < matrix[y][x]:
+                left = [y, x]
+                max_left = matrix[y][x]
         else:
-            max_right = max(max_right, matrix[y][x])
-            right = [y, x]
+            if max_right < matrix[y][x]:
+                right = [y, x]
+                max_right = matrix[y][x]
     col += 1
 
 matrix[left[0]][left[1]] = max_right
