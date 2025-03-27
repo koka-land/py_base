@@ -6,9 +6,9 @@ for i in f:
     x, y = map(float, i.split())
     if x < 0 and y < 0:
         clusters[0].append([x, y])
-    elif y > 1 and y < 7 and x > -1 and x < 2:
+    elif 1 < y < 7 and x > -1 and x < 2:
         clusters[1].append([x, y])
-    elif x > 0.5 and y < 0 and y > -5:
+    elif x > 0.5 and 0 > y > -5:
         clusters[2].append([x, y])
 
 for i in range(3):
