@@ -20,7 +20,7 @@ for i in range(len(sp) - 2):
                 p += 1
         s *= sp[i + j]
 
-    if p > 0 and abs(s) % 100 == mp12:
+    if p > 0 and abs(s) % 100 == mp12:d
         all_p.append([sp[i + 0], sp[i + 1], sp[i + 2]])
         all_s.append(abs(sum(all_p[-1])))
 
