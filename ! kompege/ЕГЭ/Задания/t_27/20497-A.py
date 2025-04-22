@@ -1,3 +1,5 @@
+
+
 f = open('files/27.19.A_20497.txt')
 clusters = [[], [], []]
 stars = [[], [], []]
