@@ -38,9 +38,8 @@ def input_var(e):
     res = equation_input.cget("text")
 
     if x == 'button':
-        if btn_w["state"] != DISABLED:
+        if len(res) != 0 and res[-1] != 'w' or len(res) == 0:
             equation_input.configure(text=res + 'w')
-            btn_w["state"] = DISABLED
     if x == 'button2':
         equation_input.configure(text=res + 'x')
         btn_x["state"] = DISABLED
@@ -62,6 +61,9 @@ def input_var(e):
         equation_input.configure(text=res + ' \u2261 ')
     if x == 'button11':
         equation_input.configure(text=res + chr(172))
+
+    #Вот сюда нужно сделать проверку на два повторных символа, кроме скобок
+
 
 def table_settings():
     top = Toplevel(w_booly)
