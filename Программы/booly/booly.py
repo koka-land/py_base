@@ -41,12 +41,14 @@ def input_var(e):
         if len(res) != 0 and res[-1] != 'w' or len(res) == 0:
             equation_input.configure(text=res + 'w')
     if x == 'button2':
-        equation_input.configure(text=res + 'x')
-        btn_x["state"] = DISABLED
+        if len(res) != 0 and res[-1] != 'x' or len(res) == 0:
+            equation_input.configure(text=res + 'x')
     if x == 'button3':
-        equation_input.configure(text=res + 'y')
+        if len(res) != 0 and res[-1] != 'y' or len(res) == 0:
+            equation_input.configure(text=res + 'y')
     if x == 'button4':
-        equation_input.configure(text=res + 'z')
+        if len(res) != 0 and res[-1] != 'z' or len(res) == 0:
+            equation_input.configure(text=res + 'z')
     if x == 'button5':
         equation_input.configure(text=res + '(')
     if x == 'button6':
