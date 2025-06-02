@@ -1,5 +1,5 @@
 def check(a):
-    if int(a) < 256 and len(str(int(a))) == len(str(a)): return True
+    if int(a) < 256 and len(str(int(a))) == len(a): return True
     return False
 
 s = open('files/24_21319.txt').readline()
