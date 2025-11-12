@@ -1,4 +1,4 @@
-import string
+`import string
 s = (string.digits + string.ascii_uppercase)[:35]
 
 for x in s:
