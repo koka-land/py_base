@@ -12,3 +12,4 @@ for n in range(1, 200):
     r = int(r)
     if r < 180:
         print(n)
+
