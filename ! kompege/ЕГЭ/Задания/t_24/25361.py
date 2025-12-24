@@ -4,7 +4,6 @@ s = s.replace('2', '0').replace('4','0').replace('6', '0').replace('8', '0')
 s = s.split('0')
 for i in s:
     if i.count('F') >= 76:
-        print(i)
         sp = []
         start = 0
         for j in range(i.count('F')):
