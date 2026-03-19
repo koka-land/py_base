@@ -1,19 +1,25 @@
-def simple(x):
-    def_sp = []
-    mul = 2
+def divs(n):
+    sp = []
+    while n % 2 == 0:
+        sp.append(2)
+        n //= 2
 
-    while x > 1:
-        if x % mul == 0:
-            x //= mul
-            def_sp.append(mul)
-        else:
-            mul += 2
-    return def_sp
+    div = 3
+    while div * div <= n:
+        while n % div == 0:
+            sp.append(div)
+            n //= div
+        div += 2
+
+    if n > 1:
+        sp.append(n)
+    return sp
 
 count = 0
-for i in range(987654144, 0, -1):
-    sp = simple(i)
-    if len(sp) == 13:
+
+for i in range(987654320, 0, -1):
+    sp = divs(i)
+    if len(sp) == 13 and str(sum(sp)).count('1') == 1:
         print(i, max(sp))
         count += 1
     if count == 5:
