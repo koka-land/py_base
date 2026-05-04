@@ -1,7 +1,7 @@
 def g(s1, s2, t):
     if (s1 + s2) >= 154 and (t == 2 or t == 4): return 1
-    if (s1 + s2) < 154 and t == 3: return 0
-    if (s1 + s2) >= 154 and t != 3: return 0
+    if (s1 + s2) < 154 and t == 4: return 0
+    if (s1 + s2) >= 154 and t != 4: return 0
     if t % 2 == 0:
         return g(s1 + 4, s2, t + 1) and \
                g(s1 * 3, s2, t + 1) and \
