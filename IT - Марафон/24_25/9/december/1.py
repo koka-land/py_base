@@ -1,1 +1,0 @@
-print(len([i for i in open('m9-1.txt').readline().split('AA') if len(i) == 34 and i[1] == 'E']))
