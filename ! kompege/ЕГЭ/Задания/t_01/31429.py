@@ -2,8 +2,7 @@ from itertools import permutations
 
 n = '1256 123 2345 3456 1345 146'.split()
 c = 'FC CB BE EA AF DF DB DE'.split()
-print(n)
-print(c)
+
 for a, b in c:
     print(a, b)
 print(*range(1, 7))
