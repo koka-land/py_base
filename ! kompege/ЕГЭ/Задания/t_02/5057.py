@@ -4,5 +4,5 @@ for y in range(2):
         for w in range(2):
             for z in range(2):
                 F = ((w <= (y == z)) and (y == (z <= x)))
-                if F == 0:
+                if F == 1:
                     print(y, x, w, z, int(F))
