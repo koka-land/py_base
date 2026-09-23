@@ -16,4 +16,3 @@ for i in f:
 b.sort(reverse=True)
 print(max(a, key=a.get))
 print(b[0] + b[1])
-print(b[0])
