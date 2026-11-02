@@ -27,4 +27,5 @@ def path():
     core_path = dfs(2840)
     total_dist = w_start + core_path + w_end
     return int(total_dist)
+
 print(path())
