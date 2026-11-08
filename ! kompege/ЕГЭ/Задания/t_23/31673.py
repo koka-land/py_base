@@ -5,7 +5,7 @@ def path():
     graph = {}
     with open('files/23_31673.txt') as f:
         for i in f:
-            l =  i.split()
+            l = i.split()
             u, v, w = int(l[0]), int(l[1]), float(l[2])
             if u not in graph:
                 graph[u] = {}
