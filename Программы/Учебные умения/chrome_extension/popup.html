@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --md-sys-color-primary: #005fb0;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-error: #ba1a1a;
+      --md-sys-color-on-error: #ffffff;
+      --md-sys-color-surface: #fdfcff;
+      --md-sys-color-on-surface: #1a1c1e;
+      --md-sys-color-outline: #74777f;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      width: 330px;
+      padding: 16px;
+      margin: 0;
+      background-color: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: normal;
+      text-align: center;
+    }
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      accent-color: var(--md-sys-color-primary);
+      cursor: pointer;
+    }
+    label { cursor: pointer; user-select: none; }
+    button {
+      width: 100%;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+
+    #startBtn {
+      background-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      margin-bottom: 10px;
+    }
+    #stopBtn {
+      background-color: var(--md-sys-color-error);
+      color: var(--md-sys-color-on-error);
+    }
+    #status {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--md-sys-color-outline);
+      text-align: center;
+      min-height: 20px;
+    }
+    /* Стили для предупреждения на чужих сайтах */
+    #warningMessage {
+      display: none;
+      padding: 15px;
+      text-align: center;
+      color: var(--md-sys-color-error);
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <h2>МЭШ Секретарь</h2>
+
+  <!-- Блок предупреждения, если открыт не журнал -->
+  <div id="warningMessage">
+    ❌ Пожалуйста, откройте страницу с оценками учеников в электронном журнале МЭШ.
+  </div>
+
+  <!-- Рабочий интерфейс -->
+  <div id="mainInterface">
+    <div class="toggle-container">
+      <input type="checkbox" id="processAll">
+      <label for="processAll"><b>Оценить все классы</b> (пройти по списку)</label>
+    </div>
+
+    <div class="toggle-container">
+      <input type="checkbox" id="forceRecalc">
+      <label for="forceRecalc">Переоценивать, если умения уже стоят</label>
+    </div>
+
+    <button id="startBtn">Запустить обход</button>
+    <button id="stopBtn">Остановить обход</button>
+    <div id="status">Версия 1.2</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

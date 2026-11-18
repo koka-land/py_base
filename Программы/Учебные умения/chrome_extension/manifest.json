@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "МЭШ Секретарь",
+  "version": "1.2",
+  "author": "Александр Ермаков",
+  "description": "Автоматическое выставление учебных умений",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "host_permissions": [
+    "*://school.mos.ru/*"
+  ]
+}
