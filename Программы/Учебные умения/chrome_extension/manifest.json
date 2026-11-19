@@ -1,15 +1,43 @@
 {
   "manifest_version": 3,
-  "name": "МЭШ Секретарь",
-  "version": "1.2",
-  "author": "Александр Ермаков",
-  "description": "Автоматическое выставление учебных умений",
-  "permissions": ["activeTab", "scripting"],
+  "name": "МЭШ Ассистент",
+  "version": "2.1.0",
+  "description": "Автоматизация оценки учебных умений и работа с электронным журналом МЭШ",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "scripting",
+    "tabs"
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_title": "МЭШ Ассистент",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png"
+    }
   },
   "host_permissions": [
-    "*://school.mos.ru/*"
+    "https://school.mos.ru/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "МЭШ Ассистент"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://school.mos.ru/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
   ]
 }

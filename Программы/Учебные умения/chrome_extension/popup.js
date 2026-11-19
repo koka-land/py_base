@@ -1,70 +1,33 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  const interfaceDiv = document.getElementById('mainInterface');
-  const warningDiv = document.getElementById('warningMessage');
+document.getElementById("startBtn").addEventListener("click", async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) return;
 
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const mode = document.querySelector('input[name="mode"]:checked')?.value || "background";
+    const forceRecalc = document.getElementById("forceRecalc").checked;
+    const processAll = document.getElementById("processAll").checked;
 
-  // Проверяем, что мы находимся в журнале МЭШ
-  if (!tab || !tab.url || !tab.url.includes("school.mos.ru") || !tab.url.includes("journal")) {
-    interfaceDiv.style.display = 'none';
-    warningDiv.style.display = 'block';
-    return;
-  } else {
-    interfaceDiv.style.display = 'block';
-    warningDiv.style.display = 'none';
-  }
-});
+    try {
+        await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ["content.js"]
+        });
 
-document.getElementById('startBtn').addEventListener('click', async () => {
-  const forceRecalc = document.getElementById('forceRecalc').checked;
-  const processAll = document.getElementById('processAll').checked;
-  const statusDiv = document.getElementById('status');
+        chrome.tabs.sendMessage(tab.id, {
+            action: "start",
+            mode,
+            forceRecalc,
+            processAll
+        });
 
-  statusDiv.textContent = "Запуск робота...";
-
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab || !tab.url || !tab.url.includes("school.mos.ru")) {
-    statusDiv.textContent = "Ошибка: Откройте вкладку school.mos.ru";
-    return;
-  }
-
-  // 1. Сначала принудительно внедряем content.js на страницу
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ['content.js']
-  }, () => {
-    // Проверяем, не возникла ли системная ошибка инъекции
-    if (chrome.runtime.lastError) {
-      statusDiv.textContent = "Ошибка: обновите страницу журнала!";
-      return;
+        window.close();
+    } catch (err) {
+        alert("Откройте страницу электронного журнала МЭШ (school.mos.ru).");
     }
-
-    statusDiv.textContent = "Робот работает. Не трогайте мышь...";
-
-    // 2. Только после успешного внедрения отправляем команду
-    setTimeout(() => {
-      chrome.tabs.sendMessage(tab.id, {
-          action: "start",
-          forceRecalc: forceRecalc,
-          processAll: processAll
-      }, (response) => {
-          // Гасим возможную ошибку, если порт не открылся мгновенно
-          if (chrome.runtime.lastError) {
-              // Игнорируем или выводим мягко
-          }
-      });
-    }, 200);
-  });
 });
 
-document.getElementById('stopBtn').addEventListener('click', async () => {
-  const statusDiv = document.getElementById('status');
-  statusDiv.textContent = "Останавливаю робота...";
+document.getElementById("stopBtn").addEventListener("click", async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) return;
 
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab && tab.url && tab.url.includes("school.mos.ru")) {
-    chrome.tabs.sendMessage(tab.id, { action: "stop" }, () => {
-      if (chrome.runtime.lastError) { /* игнорируем, если контент-скрипт еще не жил */ }
-    });
-  }
+    chrome.tabs.sendMessage(tab.id, { action: "stop" });
 });

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>МЭШ Ассистент</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --primary: #1a73e8;
+            --primary-hover: #1557b0;
+            --primary-soft: #e8f0fe;
+            --success: #188038;
+            --danger: #d93025;
+            --danger-soft: #fce8e6;
+            --text: #202124;
+            --muted: #5f6368;
+            --border: #dadce0;
+            --radius: 14px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .app-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .version-pill {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-soft);
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: #e8eaed;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 8px 10px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .mode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .mode-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 11px 12px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .mode-card:has(input:checked) {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        .mode-card input {
+            margin-top: 3px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .mode-name {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .mode-hint {
+            display: block;
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .check-row + .check-row {
+            margin-top: 10px;
+        }
+
+        .check-row input {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.05s;
+        }
+
+        .btn:active:not(:disabled) { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .btn-primary {
+            flex: 1;
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+
+        .btn-danger {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+        .btn-danger:hover:not(:disabled) { background: #fad2cf; }
+
+        .btn-secondary {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .btn-secondary:hover:not(:disabled) { background: #d2e3fc; }
+
+        /* Нижний единый блок статуса, прогресса и итогов */
+        .bottom-panel {
+            display: none;
+            margin-top: auto;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: border-color 0.2s ease;
+        }
+
+        .bottom-panel.visible { display: block; }
+        .bottom-panel.neutral { border-color: var(--border); }
+        .bottom-panel.success { border-color: var(--success); }
+        .bottom-panel.error { border-color: var(--danger); }
+
+        .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .panel-status {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .bottom-panel.success .panel-status { color: var(--success); }
+        .bottom-panel.error .panel-status { color: var(--danger); }
+
+        .panel-dismiss {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+        .panel-dismiss:hover { background: var(--bg); color: var(--text); }
+
+        .panel-class {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .panel-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .panel-student {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .panel-counter {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .bar-track {
+            width: 100%;
+            height: 7px;
+            background: #e8eaed;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 999px;
+            transition: width 0.2s ease, background-color 0.2s ease;
+        }
+        .bottom-panel.success .bar-fill { background: var(--success); }
+        .bottom-panel.error .bar-fill { background: var(--danger); }
+
+        .panel-summary {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #f1f3f4;
+            font-size: 12px;
+            color: #3c4043;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+        .panel-summary.visible { display: block; }
+
+        .panel-actions {
+            display: none;
+            margin-top: 12px;
+        }
+        .panel-actions.visible { display: flex; }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .field input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .settings-note {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .save-status {
+            font-size: 12px;
+            color: var(--success);
+            font-weight: 600;
+            min-height: 18px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <span class="app-title">МЭШ Ассистент</span>
+        <span class="version-pill">Side Panel</span>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="skills">Умения</button>
+        <button class="tab-btn" data-tab="settings">Настройки</button>
+    </div>
+
+    <!-- ВКЛАДКА 1: УМЕНИЯ -->
+    <div id="tab-skills" class="tab-pane active">
+        <div class="section-label">Режим работы</div>
+        <div class="mode-list">
+            <label class="mode-card">
+                <input type="radio" name="mode" value="background" checked>
+                <span>
+                    <span class="mode-name">В фоновом режиме</span>
+                    <span class="mode-hint">Быстро через API (~5–10 сек на класс)</span>
+                </span>
+            </label>
+            <label class="mode-card">
+                <input type="radio" name="mode" value="realtime">
+                <span>
+                    <span class="mode-name">В реальном времени</span>
+                    <span class="mode-hint">Наглядно с открытием карточек</span>
+                </span>
+            </label>
+        </div>
+
+        <div class="card">
+            <label class="check-row">
+                <input type="checkbox" id="forceRecalc">
+                <span>Переоценивать уже выставленные</span>
+            </label>
+            <label class="check-row">
+                <input type="checkbox" id="processAll">
+                <span>Пройти все классы по списку</span>
+            </label>
+        </div>
+
+        <div class="actions">
+            <button id="startBtn" class="btn btn-primary">Запустить</button>
+            <button id="stopBtn" class="btn btn-danger" disabled>Стоп</button>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 2: НАСТРОЙКИ -->
+    <div id="tab-settings" class="tab-pane">
+        <div class="card">
+            <div class="section-label">Пороги среднего балла</div>
+            <div class="field-grid">
+                <div class="field">
+                    <label for="highThreshold">Отлично (выше)</label>
+                    <input type="number" id="highThreshold" step="0.1" min="1" max="5" value="4.5">
+                </div>
+                <div class="field">
+                    <label for="midThreshold">Средне (выше)</label>
+                    <input type="number" id="midThreshold" step="0.1" min="1" max="5" value="3.5">
+                </div>
+                <div class="field">
+                    <label for="lowThreshold">Плохо (выше)</label>
+                    <input type="number" id="lowThreshold" step="0.1" min="1" max="5" value="2.5">
+                </div>
+                <div class="field">
+                    <label for="absenceThreshold">Пропуски (%)</label>
+                    <input type="number" id="absenceThreshold" step="5" min="10" max="95" value="50">
+                </div>
+            </div>
+            <div class="settings-note">
+                При пропусках выше заданного порога: если оценок нет или средний балл не выше нижнего порога — ставится «Затрудняюсь ответить» на все вопросы; при хороших оценках — только в «Саморегуляции» и «Коммуникации».
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="saveSettingsBtn" class="btn btn-primary">Сохранить</button>
+            <button id="resetSettingsBtn" class="btn btn-secondary">Сброс</button>
+        </div>
+        <div id="saveStatus" class="save-status"></div>
+    </div>
+
+    <!-- НИЖНИЙ ЕДИНЫЙ БЛОК ПРОГРЕССА И ИТОГА -->
+    <div id="bottomPanel" class="bottom-panel neutral">
+        <div class="panel-top">
+            <span id="panelStatus" class="panel-status">Выполняется...</span>
+            <button id="dismissPanelBtn" class="panel-dismiss">Скрыть</button>
+        </div>
+        <div id="panelClass" class="panel-class">Подготовка...</div>
+        <div class="panel-meta">
+            <span id="panelStudent" class="panel-student">—</span>
+            <span id="panelCounter" class="panel-counter">0 из 0</span>
+        </div>
+        <div class="bar-track">
+            <div id="panelBar" class="bar-fill"></div>
+        </div>
+        <div id="panelSummary" class="panel-summary"></div>
+        <div id="panelActions" class="panel-actions">
+            <button id="reloadBtn" class="btn btn-secondary" style="width:100%;">
+                Обновить страницу
+            </button>
+        </div>
+    </div>
+
+    <script src="sidepanel.js"></script>
+</body>
+</html>

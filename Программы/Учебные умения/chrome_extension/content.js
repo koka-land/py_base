@@ -1,302 +1,735 @@
-const delay = ms => new Promise(res => setTimeout(res, ms));
+(() => {
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
-const SKILL_LEVELS = {
-    2: "Редко",
-    3: "Часто",
-    4: "Почти всегда"
-};
+    const DEFAULT_SETTINGS = {
+        highThreshold: 4.5,
+        midThreshold: 3.5,
+        lowThreshold: 2.5,
+        absenceRatio: 0.5
+    };
 
-function getVariedSkills(average, gradesCount, hwRatio, numQuestions) {
-    let levels = [];
-    for (let i = 0; i < numQuestions; i++) {
-        let base = average >= 4.5 ? 4 : (average >= 3.5 ? 3 : 2);
+    const SKILL_LABELS = {
+        1: "Почти никогда",
+        2: "Редко",
+        3: "Часто",
+        4: "Почти всегда",
+        5: "Затрудняюсь ответить"
+    };
 
-        if (i === 0 || i === 1) {
-            if (hwRatio >= 0.8) base = (average >= 3.5) ? 4 : 3;
-            else if (hwRatio <= 0.4) base = Math.min(base, 2);
-        } else {
-            if (gradesCount >= 5 && hwRatio > 0.7) {
-                if (Math.random() < 0.3 && base < 4) base += 1;
-            } else if (gradesCount <= 2 || hwRatio < 0.4) {
-                if (Math.random() < 0.3 && base > 2) base -= 1;
-            }
-            if (Math.random() < 0.1) {
-                if (base === 4) base = 3;
-                else if (base === 3) base = Math.random() < 0.5 ? 2 : 4;
-            }
-        }
-        levels.push(base);
-    }
-    return levels;
-}
+    const IMPORTANT_KEYWORDS = [
+        "к/р", "с/р", "контрольн", "самостоятельн",
+        "тест", "проверочн", "практическ", "диктант", "сочинен"
+    ];
 
-function getElementByExactText(tag, text) {
-    return Array.from(document.querySelectorAll(tag)).find(el => el.textContent.trim() === text);
-}
+    const STANDARD_QUESTIONS = [
+        { question_group_name: "Самоорганизация", questions: [{ question_id: 1 }, { question_id: 2 }] },
+        { question_group_name: "Самообразование", questions: [{ question_id: 3 }, { question_id: 4 }] },
+        { question_group_name: "Саморегуляция", questions: [{ question_id: 5 }, { question_id: 6 }, { question_id: 7 }] },
+        { question_group_name: "Коммуникация", questions: [{ question_id: 11 }, { question_id: 13 }, { question_id: 14 }] }
+    ];
 
-function closeStudentModal() {
-    let titleEl = getElementByExactText('div', 'Информация об учащемся');
-    if (titleEl && titleEl.parentElement) {
-        let closeBtn = titleEl.parentElement.querySelector('button');
-        if (closeBtn) {
-            closeBtn.click();
-            return;
+    async function getSettings() {
+        try {
+            if (!chrome?.storage?.local) return { ...DEFAULT_SETTINGS };
+            const data = await chrome.storage.local.get({ settings: DEFAULT_SETTINGS });
+            return { ...DEFAULT_SETTINGS, ...(data.settings || {}) };
+        } catch {
+            return { ...DEFAULT_SETTINGS };
         }
     }
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-}
 
-async function switchToFirstClass() {
-    let dropdownWrapper = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
-    if (!dropdownWrapper) return false;
-
-    dropdownWrapper.click();
-    await delay(1200);
-
-    let options = Array.from(document.querySelectorAll('li, [role="option"]')).filter(el => {
-        let rect = el.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0 && !el.closest('nav') && !el.closest('header');
-    });
-
-    if (options.length === 0) {
-        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-        return false;
+    function sendPanelUpdate(data) {
+        try {
+            chrome.runtime.sendMessage({ target: "sidepanel", ...data }).catch(() => {});
+        } catch {}
     }
 
-    options[0].click();
-    await delay(3500);
-    return true;
-}
+    // =========================================================================
+    // 1. ЕДИНЫЙ АЛГОРИТМ РАСЧЁТА УЧЕБНЫХ УМЕНИЙ
+    // =========================================================================
 
-async function switchNextClass(currentClassName) {
-    let dropdownWrapper = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
-    if (!dropdownWrapper) return false;
+    function calculateAnswers(stats, settings = DEFAULT_SETTINGS, questionGroups = STANDARD_QUESTIONS) {
+        const {
+            average,
+            gradesCount,
+            hwRatio,
+            absenceRatio,
+            unexcusedRatio,
+            isUnstable,
+            importantAvg
+        } = stats;
 
-    dropdownWrapper.click();
-    await delay(1200);
+        const high = settings.highThreshold ?? 4.5;
+        const mid = settings.midThreshold ?? 3.5;
+        const low = settings.lowThreshold ?? 2.5;
+        const absLimit = settings.absenceRatio ?? 0.5;
 
-    let options = Array.from(document.querySelectorAll('li, [role="option"]')).filter(el => {
-        let rect = el.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0 && !el.closest('nav') && !el.closest('header');
-    });
+        const answers = [];
+        const hasManyAbsences = absenceRatio > absLimit;
+        const hasEvaluatableGrades = gradesCount > 0 && average > low;
 
-    if (options.length === 0) {
-        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-        return false;
+        if (hasManyAbsences && !hasEvaluatableGrades) {
+            questionGroups.forEach(group => {
+                group.questions.forEach(q => {
+                    answers.push({ question_id: String(q.question_id), answer_id: 5 });
+                });
+            });
+            return answers;
+        }
+
+        questionGroups.forEach(group => {
+            const groupName = (group.question_group_name || "").toLowerCase();
+
+            group.questions.forEach(q => {
+                if (hasManyAbsences && (groupName.includes("саморегуляц") || groupName.includes("коммуникац"))) {
+                    answers.push({ question_id: String(q.question_id), answer_id: 5 });
+                    return;
+                }
+
+                let base = average > high ? 4 : (average > mid ? 3 : (average > low ? 2 : 1));
+
+                if (groupName.includes("самоорганизац")) {
+                    if (hwRatio >= 0.8 && !isUnstable) base = average > mid ? 4 : Math.min(base + 1, 3);
+                    else if (hwRatio <= 0.4) base = Math.min(base, 2);
+                    if (isUnstable && base > 2 && Math.random() < 0.5) base -= 1;
+
+                } else if (groupName.includes("самообразован")) {
+                    if (importantAvg > high && average > high) base = 4;
+                    else if (importantAvg <= mid) base = Math.min(base, 2);
+                    else if (importantAvg < (high - 0.3) && base === 4) base = 3;
+
+                } else if (groupName.includes("саморегуляц")) {
+                    if (isUnstable && base > 2) base -= 1;
+                    if (unexcusedRatio >= 0.25 && base > 2) base -= 1;
+
+                } else {
+                    if (gradesCount >= 5 && average > mid && base < 4 && Math.random() < 0.4) {
+                        base += 1;
+                    } else if (gradesCount <= 2 && base > 2 && Math.random() < 0.3) {
+                        base -= 1;
+                    }
+                }
+
+                if (Math.random() < 0.1) {
+                    if (base === 4) base = 3;
+                    else if (base === 3) base = Math.random() < 0.5 ? 2 : 4;
+                }
+
+                answers.push({
+                    question_id: String(q.question_id),
+                    answer_id: base
+                });
+            });
+        });
+
+        return answers;
     }
 
-    let currentIndex = options.findIndex(item => item.textContent.trim().includes(currentClassName));
+    // =========================================================================
+    // 2. УТИЛИТЫ API И ПЕРЕКЛЮЧЕНИЯ КЛАССОВ
+    // =========================================================================
 
-    if (currentIndex !== -1 && currentIndex + 1 < options.length) {
-        options[currentIndex + 1].click();
-        await delay(3500);
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    function getApiHeaders() {
+        const token = getCookie('aupd_token');
+        const profileId = getCookie('profile_id');
+        const aid = getCookie('aid') || '14';
+        const subsystemId = getCookie('subsystem_id') || '9';
+
+        if (!token || !profileId) {
+            throw new Error("Не найдены данные авторизации (aupd_token / profile_id). Обновите страницу журнала.");
+        }
+
+        return {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "profile-id": profileId,
+            "aid": aid,
+            "x-mes-subsystem": "teacherweb",
+            "x-mes-hostid": subsystemId,
+            "x-mes-roleid": subsystemId
+        };
+    }
+
+    async function apiFetch(url, options = {}) {
+        const headers = getApiHeaders();
+        if (!options.body) {
+            delete headers["Content-Type"];
+        }
+        const res = await fetch(url, {
+            ...options,
+            headers: { ...headers, ...(options.headers || {}) },
+            credentials: "include"
+        });
+        if (!res.ok) {
+            const errText = await res.text().catch(() => "");
+            throw new Error(`Ошибка API ${res.status} (${url}) ${errText}`);
+        }
+        return res.json();
+    }
+
+    function getGroupIdFromUrl() {
+        const urlMatch = window.location.href.match(/(?:\/grade\/|\/journal\/|group_id[s]?=)(\d+)/);
+        if (urlMatch) return urlMatch[1];
+
+        const resources = performance.getEntriesByType('resource');
+        for (let i = resources.length - 1; i >= 0; i--) {
+            const match = resources[i].name.match(/group_id[s]?=(\d+)/);
+            if (match) return match[1];
+        }
+        return null;
+    }
+
+    function getElementByExactText(tag, text) {
+        return Array.from(document.querySelectorAll(tag)).find(el => el.textContent.trim() === text);
+    }
+
+    function closeStudentModal() {
+        let titleEl = getElementByExactText('div', 'Информация об учащемся');
+        if (titleEl && titleEl.parentElement) {
+            let closeBtn = titleEl.parentElement.querySelector('button');
+            if (closeBtn) {
+                closeBtn.click();
+                return;
+            }
+        }
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+    }
+
+    async function switchToFirstClass() {
+        let dropdownWrapper = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
+        if (!dropdownWrapper) return false;
+
+        dropdownWrapper.click();
+        await delay(1200);
+
+        let options = Array.from(document.querySelectorAll('li, [role="option"]')).filter(el => {
+            let rect = el.getBoundingClientRect();
+            return rect.width > 0 && rect.height > 0 && !el.closest('nav') && !el.closest('header');
+        });
+
+        if (options.length === 0) {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+            return false;
+        }
+
+        options[0].click();
+        await delay(3000);
         return true;
     }
 
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-    return false;
-}
+    async function switchNextClass(currentClassName) {
+        let dropdownWrapper = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
+        if (!dropdownWrapper) return false;
 
-async function processClass(forceRecalc) {
-    let studentSpans = document.querySelectorAll("tbody span[title]");
-    if (studentSpans.length === 0) return { processed: 0, alreadySet: 0, aborted: false };
+        dropdownWrapper.click();
+        await delay(1200);
 
-    let hwLessonIds = [];
-    let cdzHeaders = Array.from(document.querySelectorAll('th')).filter(th => th.textContent.includes("ЦДЗ"));
-
-    cdzHeaders.forEach(header => {
-        let div = header.querySelector('div[data-test-component]');
-        if (div) {
-            let attr = div.getAttribute("data-test-component");
-            let parts = attr.split("_");
-            if (parts.length >= 2) {
-                let match = parts[0].match(/\d+/);
-                if (match) hwLessonIds.push(match[0]);
-            }
-        }
-    });
-
-    let alreadySetCount = 0;
-    let processedCount = 0;
-
-    for (let i = 0; i < studentSpans.length; i++) {
-        // Проверка на экстренную остановку
-        if (window.meshRobotStopRequested) {
-            return { processed: processedCount, alreadySet: alreadySetCount, aborted: true };
-        }
-
-        let span = studentSpans[i];
-        let row = span.closest('tr');
-        if (!row) continue;
-
-        let cells = row.querySelectorAll('td');
-        let gradeText = cells[cells.length - 1].textContent.trim().replace(',', '.');
-        if (!gradeText || gradeText === "-") continue;
-
-        let grade = parseFloat(gradeText);
-        let gradesCount = 0;
-        let hwCompleted = 0;
-
-        let markDivs = row.querySelectorAll('div[data-test-component^="markCell-"]');
-        markDivs.forEach(div => {
-            let text = div.textContent.trim();
-            let hasGrade = ['5','4','3','2','1'].includes(text);
-            if (hasGrade) gradesCount++;
-
-            let attr = div.getAttribute("data-test-component");
-            if (attr) {
-                let parts = attr.split("_");
-                if (parts.length >= 3 && hwLessonIds.includes(parts[1])) {
-                    if (hasGrade || (text !== "" && !['н','нб','нв'].includes(text.toLowerCase()))) {
-                        hwCompleted++;
-                    }
-                }
-            }
+        let options = Array.from(document.querySelectorAll('li, [role="option"]')).filter(el => {
+            let rect = el.getBoundingClientRect();
+            return rect.width > 0 && rect.height > 0 && !el.closest('nav') && !el.closest('header');
         });
 
-        let hwRatio = hwLessonIds.length > 0 ? hwCompleted / hwLessonIds.length : 1.0;
-
-        span.click();
-        await delay(800);
-
-        // Вторая проверка после паузы (вдруг нажали Стоп, пока открывалось окно)
-        if (window.meshRobotStopRequested) {
-            closeStudentModal();
-            return { processed: processedCount, alreadySet: alreadySetCount, aborted: true };
+        if (options.length === 0) {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+            return false;
         }
 
-        let revalBtn = getElementByExactText('button', 'Повторно оценить учебные умения');
-        let evalBtn = getElementByExactText('button', 'Оценить учебные умения');
+        let currentIndex = options.findIndex(item => item.textContent.trim().includes(currentClassName));
 
-        if (revalBtn) {
-            if (forceRecalc) {
-                revalBtn.click();
-            } else {
+        if (currentIndex !== -1 && currentIndex + 1 < options.length) {
+            options[currentIndex + 1].click();
+            await delay(3000);
+            return true;
+        }
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+        return false;
+    }
+
+    // =========================================================================
+    // 3. РЕЖИМ 1: ФОНОВЫЙ (ЧЕРЕЗ API)
+    // =========================================================================
+
+    async function processClassAPI(forceRecalc, currentClassName, settings) {
+        const groupId = getGroupIdFromUrl();
+        if (!groupId) {
+            throw new Error("Не удалось определить ID группы из адресной строки.");
+        }
+
+        const aid = getCookie('aid') || '14';
+        sendPanelUpdate({ type: "progress", className: currentClassName, studentName: "Загрузка списка класса...", current: 0, total: 0 });
+
+        const studentsUrl = `https://school.mos.ru/api/ej/core/teacher/v1/student_profiles?academic_year_id=${aid}&group_ids=${groupId}&with_groups=true&with_deleted=false&with_transferred=false&per_page=150&page=1`;
+        const students = await apiFetch(studentsUrl);
+
+        if (!Array.isArray(students) || students.length === 0) {
+            return { processed: 0, alreadySet: 0, skipped: 0, aborted: false };
+        }
+
+        const firstStudent = students[0];
+        const groupObj = (firstStudent.groups || []).find(g => String(g.id) === String(groupId));
+        if (!groupObj) {
+            throw new Error("Не удалось найти метаданные предмета для группы " + groupId);
+        }
+
+        const subjectId = groupObj.subject_id;
+        const classLevelId = firstStudent.class_unit?.class_level_id || firstStudent.class_level;
+        const schoolId = firstStudent.school_id;
+        const educationLevelId = firstStudent.education_level || 2;
+        const beginDate = groupObj.begin_date || "01.09.2026";
+        const endDate = groupObj.end_date || "31.08.2027";
+
+        const marksUrl = `https://school.mos.ru/api/ej/core/teacher/v1/marks?group_ids=${groupId}&subject_id=${subjectId}&class_level_id=${classLevelId}&lesson_date_from=${beginDate}&lesson_date_to=${endDate}&with_non_numeric_entries=true&per_page=1000&page=1`;
+        const attendancesUrl = `https://school.mos.ru/api/ej/core/teacher/v1/attendances?group_ids=${groupId}&class_level_id=${classLevelId}&academic_year_id=${aid}&start_at=${beginDate}&stop_at=${endDate}&page=1&per_page=1000`;
+        const controlFormsUrl = `https://school.mos.ru/api/ej/core/teacher/v1/control_forms?academic_year_id=${aid}&school_id=${schoolId}&subject_id=${subjectId}&with_grade_system=true&with_deleted=false&education_level_id=${educationLevelId}&page=1&per_page=1000`;
+
+        const [marks, attendances, controlForms] = await Promise.all([
+            apiFetch(marksUrl),
+            apiFetch(attendancesUrl),
+            apiFetch(controlFormsUrl)
+        ]);
+
+        const hwControlFormIds = new Set();
+        const importantControlFormIds = new Set();
+
+        (controlForms || []).forEach(cf => {
+            const name = (cf.name || cf.short_name || "").toLowerCase();
+            if (name.includes("цдз") || name.includes("цифров")) hwControlFormIds.add(cf.id);
+            if (IMPORTANT_KEYWORDS.some(kw => name.includes(kw))) importantControlFormIds.add(cf.id);
+        });
+
+        const allLessonIds = new Set();
+        (marks || []).forEach(m => { if (m.schedule_lesson_id) allLessonIds.add(m.schedule_lesson_id); });
+        (attendances || []).forEach(a => { if (a.schedule_lesson_id) allLessonIds.add(a.schedule_lesson_id); });
+        const totalLessons = allLessonIds.size;
+
+        let processedCount = 0;
+        let alreadySetCount = 0;
+        let skippedCount = 0;
+
+        for (let i = 0; i < students.length; i++) {
+            if (window.meshRobotStopRequested) {
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
+            }
+
+            const student = students[i];
+            const studentName = student.short_name || student.user_name || `Ученик #${i + 1}`;
+            sendPanelUpdate({
+                type: "progress",
+                className: currentClassName,
+                studentName,
+                current: i + 1,
+                total: students.length
+            });
+
+            if (!student.person_id) {
+                skippedCount++;
+                continue;
+            }
+
+            const periodsData = await apiFetch(`https://school.mos.ru/api/soft_skills/v1/periods?student_person_id=${student.person_id}`);
+            const currentPeriod = (periodsData.periods || []).find(p => p.is_current);
+
+            if (!currentPeriod) {
+                skippedCount++;
+                continue;
+            }
+
+            if (currentPeriod.exist_teacher_answer && !forceRecalc) {
                 alreadySetCount++;
+                continue;
+            }
+
+            const studentMarks = (marks || []).filter(m => m.student_profile_id === student.id && !m.deleted_by);
+            const studentAttendances = (attendances || []).filter(a => a.student_profile_id === student.id);
+
+            let grades = [];
+            let weightedSum = 0;
+            let totalWeight = 0;
+            let importantGrades = [];
+            let hwTotal = 0;
+            let hwCompleted = 0;
+
+            studentMarks.forEach(m => {
+                const numericVal = m.values?.[0]?.grade?.five;
+                const weight = m.weight || 1;
+                const isHw = hwControlFormIds.has(m.control_form_id);
+                const isImportant = weight > 1 || importantControlFormIds.has(m.control_form_id);
+
+                if (isHw) {
+                    hwTotal++;
+                    if (numericVal != null) hwCompleted++;
+                }
+
+                if (numericVal != null) {
+                    grades.push(numericVal);
+                    weightedSum += numericVal * weight;
+                    totalWeight += weight;
+                    if (isImportant) importantGrades.push(numericVal);
+                }
+            });
+
+            const totalAbsences = studentAttendances.length;
+            const unexcusedAbsences = studentAttendances.filter(a => a.absence_reason_id === 2 || !a.nonattendance_reason_id).length;
+
+            if (grades.length === 0 && totalAbsences === 0) {
+                skippedCount++;
+                continue;
+            }
+
+            const average = totalWeight > 0 ? (weightedSum / totalWeight) : 0;
+            const hwRatio = hwTotal > 0 ? (hwCompleted / hwTotal) : 1.0;
+            const absenceRatio = totalLessons > 0 ? (totalAbsences / totalLessons) : 0;
+            const unexcusedRatio = totalLessons > 0 ? (unexcusedAbsences / totalLessons) : 0;
+            const hasTwos = grades.some(g => g <= 2);
+            const spread = grades.length > 1 ? (Math.max(...grades) - Math.min(...grades)) : 0;
+            const isUnstable = hasTwos || spread >= 2;
+            const importantAvg = importantGrades.length > 0
+                ? importantGrades.reduce((a, b) => a + b, 0) / importantGrades.length
+                : average;
+
+            const answers = calculateAnswers({
+                average,
+                gradesCount: grades.length,
+                hwRatio,
+                absenceRatio,
+                unexcusedRatio,
+                isUnstable,
+                importantAvg
+            }, settings, STANDARD_QUESTIONS);
+
+            await apiFetch("https://school.mos.ru/api/soft_skills/v1/survey", {
+                method: "POST",
+                body: JSON.stringify({
+                    student_person_id: student.person_id,
+                    period_id: currentPeriod.period_id,
+                    answers
+                })
+            });
+
+            console.log(`[МЭШ Ассистент] Выставлено: ${studentName} (ср. ${average.toFixed(2)}, пропуски ${(absenceRatio * 100).toFixed(0)}%)`);
+            processedCount++;
+            await delay(250);
+        }
+
+        return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: false };
+    }
+
+    // =========================================================================
+    // 4. РЕЖИМ 2: В РЕАЛЬНОМ ВРЕМЕНИ (КЛИКИ ПО ИНТЕРФЕЙСУ)
+    // =========================================================================
+
+    async function processClassUI(forceRecalc, currentClassName, settings) {
+        let studentSpans = document.querySelectorAll("tbody span[title]");
+        if (studentSpans.length === 0) {
+            return { processed: 0, alreadySet: 0, skipped: 0, aborted: false };
+        }
+
+        let allLessonIds = new Set();
+        let hwLessonIds = [];
+        let importantLessonIds = [];
+
+        Array.from(document.querySelectorAll('th')).forEach(header => {
+            let text = header.textContent.toLowerCase();
+            let div = header.querySelector('div[data-test-component]');
+            if (!div) return;
+
+            let attr = div.getAttribute("data-test-component");
+            let parts = attr.split("_");
+            if (parts.length < 2) return;
+
+            let match = parts[0].match(/\d+/);
+            if (!match) return;
+            let lessonId = match[0];
+
+            allLessonIds.add(lessonId);
+            if (text.includes("цдз")) hwLessonIds.push(lessonId);
+            if (IMPORTANT_KEYWORDS.some(kw => text.includes(kw))) importantLessonIds.push(lessonId);
+        });
+
+        let totalLessons = allLessonIds.size;
+        let alreadySetCount = 0;
+        let processedCount = 0;
+        let skippedCount = 0;
+
+        for (let i = 0; i < studentSpans.length; i++) {
+            if (window.meshRobotStopRequested) {
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
+            }
+
+            let span = studentSpans[i];
+            let studentName = span.getAttribute("title") || span.textContent.trim();
+
+            sendPanelUpdate({
+                type: "progress",
+                className: currentClassName,
+                studentName,
+                current: i + 1,
+                total: studentSpans.length
+            });
+
+            let row = span.closest('tr');
+            if (!row) {
+                skippedCount++;
+                continue;
+            }
+
+            let cells = row.querySelectorAll('td');
+            let gradeText = cells[cells.length - 1].textContent.trim().replace(',', '.');
+            let grade = (gradeText && gradeText !== "-") ? parseFloat(gradeText) : 0;
+
+            let grades = [];
+            let importantGrades = [];
+            let hwCompleted = 0;
+            let unexcusedAbsences = 0;
+            let totalAbsences = 0;
+
+            let markDivs = row.querySelectorAll('div[data-test-component^="markCell-"]');
+            markDivs.forEach(div => {
+                let text = div.textContent.trim();
+                let lowerText = text.toLowerCase();
+                let hasGrade = ['5', '4', '3', '2', '1'].includes(text);
+
+                if (hasGrade) {
+                    grades.push(parseInt(text, 10));
+                } else if (['н', 'нв'].includes(lowerText)) {
+                    unexcusedAbsences++;
+                    totalAbsences++;
+                } else if (['нб', 'б', 'у'].includes(lowerText)) {
+                    totalAbsences++;
+                }
+
+                let attr = div.getAttribute("data-test-component");
+                if (attr) {
+                    let parts = attr.split("_");
+                    if (parts.length >= 3) {
+                        let lessonId = parts[1];
+                        if (hwLessonIds.includes(lessonId)) {
+                            if (hasGrade || (text !== "" && !['н', 'нб', 'нв', 'б', 'у'].includes(lowerText))) {
+                                hwCompleted++;
+                            }
+                        }
+                        if (hasGrade && importantLessonIds.includes(lessonId)) {
+                            importantGrades.push(parseInt(text, 10));
+                        }
+                    }
+                }
+            });
+
+            if (grades.length === 0 && totalAbsences === 0) {
+                skippedCount++;
+                continue;
+            }
+
+            let hwRatio = hwLessonIds.length > 0 ? hwCompleted / hwLessonIds.length : 1.0;
+            let absenceRatio = totalLessons > 0 ? totalAbsences / totalLessons : 0;
+            let unexcusedRatio = totalLessons > 0 ? unexcusedAbsences / totalLessons : 0;
+            let hasTwos = grades.includes(2) || grades.includes(1);
+            let spread = grades.length > 1 ? Math.max(...grades) - Math.min(...grades) : 0;
+            let isUnstable = hasTwos || spread >= 2;
+            let importantAvg = importantGrades.length > 0
+                ? importantGrades.reduce((a, b) => a + b, 0) / importantGrades.length
+                : grade;
+
+            let answers = calculateAnswers({
+                average: grade,
+                gradesCount: grades.length,
+                hwRatio,
+                absenceRatio,
+                unexcusedRatio,
+                isUnstable,
+                importantAvg
+            }, settings, STANDARD_QUESTIONS);
+
+            span.click();
+            await delay(800);
+
+            if (window.meshRobotStopRequested) {
+                closeStudentModal();
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
+            }
+
+            let revalBtn = getElementByExactText('button', 'Повторно оценить учебные умения');
+            let evalBtn = getElementByExactText('button', 'Оценить учебные умения');
+
+            if (revalBtn) {
+                if (forceRecalc) {
+                    revalBtn.click();
+                } else {
+                    alreadySetCount++;
+                    closeStudentModal();
+                    await delay(400);
+                    continue;
+                }
+            } else if (evalBtn) {
+                evalBtn.click();
+            } else {
+                skippedCount++;
                 closeStudentModal();
                 await delay(400);
                 continue;
             }
-        } else if (evalBtn) {
-            evalBtn.click();
-        } else {
-            closeStudentModal();
-            await delay(400);
-            continue;
-        }
 
-        await delay(1500);
+            await delay(1500);
 
-        if (window.meshRobotStopRequested) {
-            closeStudentModal();
-            return { processed: processedCount, alreadySet: alreadySetCount, aborted: true };
-        }
+            if (window.meshRobotStopRequested) {
+                closeStudentModal();
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
+            }
 
-        let options2 = Array.from(document.querySelectorAll('label')).filter(l => l.textContent.includes('Редко'));
-        let numQuestions = options2.length;
+            let options2 = Array.from(document.querySelectorAll('label')).filter(l => l.textContent.includes('Редко'));
+            let numQuestions = Math.min(options2.length, answers.length);
 
-        if (numQuestions === 0) {
-            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-            await delay(400);
-            continue;
-        }
+            if (numQuestions === 0) {
+                document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+                await delay(400);
+                skippedCount++;
+                continue;
+            }
 
-        let levels = getVariedSkills(grade, gradesCount, hwRatio, numQuestions);
+            for (let q = 0; q < numQuestions; q++) {
+                if (q === 0) {
+                    let dummys = Array.from(document.querySelectorAll('label')).filter(l => l.textContent.includes('Почти никогда'));
+                    if (dummys.length > 0) {
+                        dummys[0].click();
+                        await delay(150);
+                    }
+                }
 
-        for (let q = 0; q < numQuestions; q++) {
-            if (q === 0) {
-                let dummys = Array.from(document.querySelectorAll('label')).filter(l => l.textContent.includes('Почти никогда'));
-                if (dummys.length > 0) {
-                    dummys[0].click();
-                    await delay(150);
+                let targetText = SKILL_LABELS[answers[q].answer_id];
+                let targets = Array.from(document.querySelectorAll('label')).filter(l => l.textContent.includes(targetText));
+
+                if (targets[q]) {
+                    targets[q].click();
+                    await delay(250);
                 }
             }
 
-            let targetText = SKILL_LEVELS[levels[q]];
-            let targets = Array.from(document.querySelectorAll('label')).filter(l => l.textContent.includes(targetText));
+            await delay(500);
+            let saveBtn = getElementByExactText('button', 'Сохранить');
+            if (saveBtn) saveBtn.click();
 
-            if (targets[q]) {
-                targets[q].click();
-                await delay(250);
+            await delay(2000);
+
+            if (window.meshRobotStopRequested) {
+                closeStudentModal();
+                processedCount++;
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
             }
-        }
 
-        await delay(500);
-        let saveBtn = getElementByExactText('button', 'Сохранить');
-        if (saveBtn) saveBtn.click();
+            let closeBtn = getElementByExactText('button', 'Закрыть');
+            if (closeBtn) closeBtn.click();
 
-        await delay(2000);
-
-        // Подстраховка: если мы нажали сохранить, окно закрывается само,
-        // но если произошел стоп в этот момент, попытаемся закрыть окно крестиком
-        if (window.meshRobotStopRequested) {
-            closeStudentModal();
             processedCount++;
-            return { processed: processedCount, alreadySet: alreadySetCount, aborted: true };
+            await delay(800);
         }
 
-        let closeBtn = getElementByExactText('button', 'Закрыть');
-        if (closeBtn) closeBtn.click();
-
-        processedCount++;
-        await delay(800);
+        return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: false };
     }
 
-    return { processed: processedCount, alreadySet: alreadySetCount, aborted: false };
-}
+    // =========================================================================
+    // 5. ГЛАВНЫЙ КОНТРОЛЛЕР
+    // =========================================================================
 
-async function runRobot(forceRecalc, processAll) {
-    if (window.isMeshRobotRunning) {
-        alert("Робот уже работает! Вы можете остановить его кнопкой в меню.");
-        return;
-    }
-
-    window.isMeshRobotRunning = true;
-    window.meshRobotStopRequested = false;
-
-    let globalStats = { processed: 0, alreadySet: 0, classes: 0 };
-
-    if (processAll) {
-        let switchedToFirst = await switchToFirstClass();
-        if (!switchedToFirst || window.meshRobotStopRequested) {
-            if (!window.meshRobotStopRequested) alert("Не удалось открыть список классов.");
-            window.isMeshRobotRunning = false;
+    async function runRobot(forceRecalc, processAll, mode = "background") {
+        if (window.isMeshRobotRunning) {
             return;
         }
+
+        window.isMeshRobotRunning = true;
+        window.meshRobotStopRequested = false;
+
+        let globalStats = { processed: 0, alreadySet: 0, skipped: 0, classes: 0 };
+
+        try {
+            const settings = await getSettings();
+
+            if (processAll) {
+                sendPanelUpdate({ type: "progress", studentName: "Переход к первому классу..." });
+                let switchedToFirst = await switchToFirstClass();
+                if (!switchedToFirst || window.meshRobotStopRequested) {
+                    if (!window.meshRobotStopRequested) {
+                        throw new Error("Не удалось открыть список классов.");
+                    }
+                    return;
+                }
+            }
+
+            do {
+                if (window.meshRobotStopRequested) break;
+
+                let dropdownWrapper = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
+                let currentClass = dropdownWrapper ? dropdownWrapper.textContent.trim() : "Текущий класс";
+
+                let stats = mode === "background"
+                    ? await processClassAPI(forceRecalc, currentClass, settings)
+                    : await processClassUI(forceRecalc, currentClass, settings);
+
+                globalStats.processed += stats.processed;
+                globalStats.alreadySet += stats.alreadySet;
+                globalStats.skipped += stats.skipped;
+                globalStats.classes++;
+
+                if (stats.aborted || window.meshRobotStopRequested || !processAll) break;
+
+                sendPanelUpdate({ type: "progress", studentName: "Переключаем класс..." });
+                let hasNext = await switchNextClass(currentClass);
+                if (!hasNext) break;
+
+            } while (true);
+
+            const summaryText =
+                `Классов пройдено: ${globalStats.classes}\n` +
+                `Успешно выставлено: ${globalStats.processed}\n` +
+                `Уже стояли (пропущено): ${globalStats.alreadySet}\n` +
+                `Нет данных: ${globalStats.skipped}`;
+
+            if (window.meshRobotStopRequested) {
+                sendPanelUpdate({
+                    type: "finish",
+                    title: "Остановлено пользователем",
+                    summary: summaryText,
+                    isError: true,
+                    showReload: mode === "background" && globalStats.processed > 0
+                });
+            } else {
+                sendPanelUpdate({
+                    type: "finish",
+                    title: "Готово!",
+                    summary: summaryText,
+                    isError: false,
+                    showReload: mode === "background"
+                });
+            }
+        } catch (err) {
+            console.error("[МЭШ Ассистент] Ошибка:", err);
+            sendPanelUpdate({
+                type: "error",
+                title: "Произошла ошибка",
+                summary: `${err.message}\n\nПодробности в консоли (F12).`,
+                isError: true,
+                showReload: false
+            });
+        } finally {
+            window.isMeshRobotRunning = false;
+            window.meshRobotStopRequested = false;
+        }
     }
 
-    do {
-        if (window.meshRobotStopRequested) break;
-
-        let dropdownWrapper = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
-        let currentClass = dropdownWrapper ? dropdownWrapper.textContent.trim() : "Текущий класс";
-
-        let stats = await processClass(forceRecalc);
-        globalStats.processed += stats.processed;
-        globalStats.alreadySet += stats.alreadySet;
-        globalStats.classes++;
-
-        if (stats.aborted || window.meshRobotStopRequested || !processAll) break;
-
-        let hasNext = await switchNextClass(currentClass);
-        if (!hasNext) break;
-
-    } while (true);
-
-    if (window.meshRobotStopRequested) {
-        alert(`🚨 ЭКСТРЕННАЯ ОСТАНОВКА!\n\nУспели пройти классов: ${globalStats.classes}\nВыставлено: ${globalStats.processed}\nПропущено: ${globalStats.alreadySet}`);
-    } else {
-        alert(`ОБХОД ЗАВЕРШЕН!\n\nКлассов пройдено: ${globalStats.classes}\nУспешно выставлено: ${globalStats.processed}\nУже стояли (пропущено): ${globalStats.alreadySet}`);
+    if (!window.meshRobotListenerAdded) {
+        window.meshRobotListenerAdded = true;
+        chrome.runtime.onMessage.addListener((request) => {
+            if (request.action === "start") {
+                runRobot(request.forceRecalc, request.processAll, request.mode);
+            } else if (request.action === "stop") {
+                window.meshRobotStopRequested = true;
+            }
+        });
     }
-
-    window.isMeshRobotRunning = false;
-    window.meshRobotStopRequested = false;
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "start") {
-        runRobot(request.forceRecalc, request.processAll);
-    } else if (request.action === "stop") {
-        window.meshRobotStopRequested = true;
-    }
-});
+})();
