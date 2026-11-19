@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "МЭШ Ассистент",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Автоматизация оценки учебных умений и работа с электронным журналом МЭШ",
   "permissions": [
     "sidePanel",
@@ -10,16 +10,9 @@
     "tabs"
   ],
   "icons": {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png"
-  },
-  "action": {
-    "default_title": "МЭШ Ассистент",
-    "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png"
-    }
+    "16": "img/icon.png",
+    "48": "img/icon.png",
+    "128": "img/icon.png"
   },
   "host_permissions": [
     "https://school.mos.ru/*"
@@ -31,7 +24,11 @@
     "default_path": "sidepanel.html"
   },
   "action": {
-    "default_title": "МЭШ Ассистент"
+    "default_title": "МЭШ Ассистент",
+    "default_icon": {
+      "16": "img/icon.png",
+      "48": "img/icon.png"
+    }
   },
   "content_scripts": [
     {

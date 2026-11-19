@@ -2,6 +2,7 @@
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const DEFAULT_SETTINGS = {
+        autoOpenJournalPanel: true,
         highThreshold: 4.5,
         midThreshold: 3.5,
         lowThreshold: 2.5,
@@ -28,6 +29,170 @@
         { question_group_name: "Коммуникация", questions: [{ question_id: 11 }, { question_id: 13 }, { question_id: 14 }] }
     ];
 
+    function parseRgbColor(colorStr) {
+        if (!colorStr) return null;
+        const match = colorStr.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,/\s]+([\d.]+))?\s*\)/i);
+        if (!match) return null;
+        const alpha = match[4] !== undefined ? parseFloat(match[4]) : 1;
+        if (Number.isNaN(alpha) || alpha <= 0.05) return null;
+        return {
+            r: Math.min(255, Math.max(0, Math.round(parseFloat(match[1])))),
+            g: Math.min(255, Math.max(0, Math.round(parseFloat(match[2])))),
+            b: Math.min(255, Math.max(0, Math.round(parseFloat(match[3]))))
+        };
+    }
+
+    function rgbToCss({ r, g, b }) {
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function rgbToRgba({ r, g, b }, alpha) {
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function getLuminance({ r, g, b }) {
+        const toLinear = v => {
+            const s = v / 255;
+            return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+        };
+        return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+    }
+
+    function getSaturation({ r, g, b }) {
+        const max = Math.max(r, g, b) / 255;
+        const min = Math.min(r, g, b) / 255;
+        if (max === min) return 0;
+        const l = (max + min) / 2;
+        const d = max - min;
+        return l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    }
+
+    function extractJournalTheme() {
+        try {
+            const leftMenu =
+                document.querySelector("aside, nav, [class*='sidebar' i], [class*='Sidebar' i], [class*='leftMenu' i], [class*='left-menu' i]") ||
+                null;
+
+            if (!leftMenu) {
+                return null;
+            }
+
+            const menuStyle = window.getComputedStyle(leftMenu);
+            const menuBgRgb = parseRgbColor(menuStyle.backgroundColor);
+
+            // Если у самого <aside>/<nav> фон прозрачный, ищем фон внутри контейнера меню
+            let effectiveMenuBg = menuBgRgb;
+            if (!effectiveMenuBg) {
+                const menuChildren = Array.from(leftMenu.querySelectorAll("div, ul, section"));
+                for (const child of menuChildren) {
+                    const st = window.getComputedStyle(child);
+                    const c = parseRgbColor(st.backgroundColor);
+                    const rect = child.getBoundingClientRect();
+                    if (c && rect.width > 120 && rect.height > 200) {
+                        effectiveMenuBg = c;
+                        break;
+                    }
+                }
+            }
+
+            if (!effectiveMenuBg) {
+                return null;
+            }
+
+            const isMenuDark = getLuminance(effectiveMenuBg) < 0.35;
+
+            // Ищем акцентный цвет активного пункта левого меню (например, «Журналы классов»)
+            let activeAccentRgb = null;
+            const activeSelectors = [
+                "[aria-current='page']",
+                "[aria-selected='true']",
+                ".active",
+                "[class*='active' i]",
+                "[class*='selected' i]",
+                "[class*='current' i]"
+            ];
+
+            for (const sel of activeSelectors) {
+                const candidates = Array.from(leftMenu.querySelectorAll(sel));
+                for (const item of candidates) {
+                    const rect = item.getBoundingClientRect();
+                    if (rect.width === 0 || rect.height === 0) continue;
+                    const st = window.getComputedStyle(item);
+                    const bgCandidate = parseRgbColor(st.backgroundColor);
+                    if (bgCandidate && getSaturation(bgCandidate) > 0.25) {
+                        const lum = getLuminance(bgCandidate);
+                        if (lum > 0.03 && lum < 0.85) {
+                            activeAccentRgb = bgCandidate;
+                            break;
+                        }
+                    }
+                }
+                if (activeAccentRgb) break;
+            }
+
+            // Запасной поиск насыщенного цвета внутри левого меню
+            if (!activeAccentRgb) {
+                const menuElems = Array.from(leftMenu.querySelectorAll("a, button, li, div, span"));
+                for (const el of menuElems) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.width === 0 || rect.height === 0) continue;
+                    const st = window.getComputedStyle(el);
+                    const bgCandidate = parseRgbColor(st.backgroundColor);
+                    if (bgCandidate && getSaturation(bgCandidate) > 0.35) {
+                        const lum = getLuminance(bgCandidate);
+                        if (lum > 0.04 && lum < 0.75) {
+                            activeAccentRgb = bgCandidate;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            const clampChannel = v => Math.min(255, Math.max(0, Math.round(v)));
+            const shiftRgb = (rgb, delta) => ({
+                r: clampChannel(rgb.r + delta),
+                g: clampChannel(rgb.g + delta),
+                b: clampChannel(rgb.b + delta)
+            });
+
+            // Строим согласованную палитру от цвета левого меню без потери контраста
+            const finalBg = isMenuDark
+                ? shiftRgb(effectiveMenuBg, -6)
+                : shiftRgb(effectiveMenuBg, 4);
+
+            const finalSurface = isMenuDark
+                ? shiftRgb(effectiveMenuBg, 10)
+                : { r: 255, g: 255, b: 255 };
+
+            const finalText = isMenuDark
+                ? { r: 232, g: 234, b: 237 }
+                : { r: 32, g: 33, b: 36 };
+
+            const finalPrimary = activeAccentRgb || (isMenuDark
+                ? { r: 92, g: 158, b: 255 }
+                : { r: 26, g: 115, b: 232 });
+
+            const primaryHover = isMenuDark
+                ? shiftRgb(finalPrimary, 22)
+                : shiftRgb(finalPrimary, -20);
+
+            return {
+                mode: isMenuDark ? "dark" : "light",
+                vars: {
+                    "--bg": rgbToCss(finalBg),
+                    "--surface": rgbToCss(finalSurface),
+                    "--text": rgbToCss(finalText),
+                    "--primary": rgbToCss(finalPrimary),
+                    "--primary-hover": rgbToCss(primaryHover),
+                    "--primary-soft": rgbToRgba(finalPrimary, isMenuDark ? 0.22 : 0.14),
+                    "--on-primary": getLuminance(finalPrimary) > 0.45 ? "#111318" : "#ffffff"
+                }
+            };
+        } catch {
+            return null;
+        }
+    }
+
     async function getSettings() {
         try {
             if (!chrome?.storage?.local) return { ...DEFAULT_SETTINGS };
@@ -42,6 +207,53 @@
         try {
             chrome.runtime.sendMessage({ target: "sidepanel", ...data }).catch(() => {});
         } catch {}
+    }
+
+    function detectJournalContext() {
+        const classSelector = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
+        const hasClassSelector = Boolean(classSelector);
+        const hasStudentRows = document.querySelectorAll("tbody span[title]").length > 0;
+        const onJournalPath =
+            window.location.hostname === "school.mos.ru" &&
+            (window.location.pathname.includes("/journal") || window.location.pathname.includes("/grade"));
+
+        const isClassJournal = hasClassSelector || hasStudentRows || onJournalPath;
+
+        return {
+            isJournalPage: onJournalPath,
+            isClassJournal,
+            className: hasClassSelector ? classSelector.textContent.trim() : "",
+            journalTheme: isClassJournal ? extractJournalTheme() : null
+        };
+    }
+
+    let contextCheckTimers = [];
+
+    function clearContextCheckTimers() {
+        contextCheckTimers.forEach(id => clearTimeout(id));
+        contextCheckTimers = [];
+    }
+
+    function reportJournalContext(withRetries = false) {
+        clearContextCheckTimers();
+
+        const sendCurrent = () => {
+            sendPanelUpdate({
+                type: "page_context",
+                ...detectJournalContext()
+            });
+        };
+
+        sendCurrent();
+
+        if (withRetries) {
+            [600, 1400, 2500].forEach(ms => {
+                const timerId = setTimeout(() => {
+                    sendCurrent();
+                }, ms);
+                contextCheckTimers.push(timerId);
+            });
+        }
     }
 
     // =========================================================================
@@ -724,12 +936,19 @@
 
     if (!window.meshRobotListenerAdded) {
         window.meshRobotListenerAdded = true;
-        chrome.runtime.onMessage.addListener((request) => {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (request.action === "start") {
                 runRobot(request.forceRecalc, request.processAll, request.mode);
             } else if (request.action === "stop") {
                 window.meshRobotStopRequested = true;
+            } else if (request.action === "check_context") {
+                const ctx = detectJournalContext();
+                reportJournalContext(true);
+                sendResponse?.(ctx);
+                return true;
             }
         });
     }
+
+    reportJournalContext(true);
 })();
