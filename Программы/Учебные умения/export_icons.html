@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Экспорт иконок МЭШ Ассистент</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f4f6fa;
+            color: #202124;
+            padding: 24px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #d8dee9;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto 12px;
+            background-image: linear-gradient(45deg, #eee 25%, transparent 25%),
+                              linear-gradient(-45deg, #eee 25%, transparent 25%),
+                              linear-gradient(45deg, transparent 75%, #eee 75%),
+                              linear-gradient(-45deg, transparent 75%, #eee 75%);
+            background-size: 12px 12px;
+            background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+            border-radius: 8px;
+        }
+        button, a.dl {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #2f80ed;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        button:hover, a.dl:hover {
+            background: #1c6bd6;
+        }
+    </style>
+</head>
+<body>
+    <h2>Генератор PNG-иконок из SVG</h2>
+    <button id="downloadAllBtn">Скачать все 4 размера</button>
+    <div class="row" id="cards"></div>
+
+    <script>
+        const SIZES = [16, 32, 48, 128];
+
+        // Статичная версия нашего SVG с фирменным синим цветом МЭШ (#2f80ed) и белым контуром (#ffffff)
+        const svgMarkup = `
+        <svg viewBox="0 0 48 48" width="512" height="512" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="48" height="48" rx="12" fill="#2f80ed"/>
+            <line x1="24" y1="8.5" x2="24" y2="14" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+            <circle cx="24" cy="7" r="2.4" fill="#ffffff"/>
+            <rect x="7.5" y="21.5" width="3.5" height="8" rx="1.75" fill="#ffffff" opacity="0.85"/>
+            <rect x="37" y="21.5" width="3.5" height="8" rx="1.75" fill="#ffffff" opacity="0.85"/>
+            <rect x="12" y="14.5" width="24" height="21" rx="6.5" stroke="#ffffff" stroke-width="2.6"/>
+            <circle cx="19.3" cy="24" r="2.8" fill="#ffffff"/>
+            <circle cx="28.7" cy="24" r="2.8" fill="#ffffff"/>
+            <path d="M19.5 30C20.8 31.4 27.2 31.4 28.5 30" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>`.trim();
+
+        const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const img = new Image();
+
+        img.onload = () => {
+            const container = document.getElementById("cards");
+            const links = [];
+
+            SIZES.forEach(size => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const canvas = document.createElement("canvas");
+                canvas.width = size;
+                canvas.height = size;
+                canvas.style.width = Math.max(size, 48) + "px";
+                canvas.style.height = Math.max(size, 48) + "px";
+
+                const ctx = canvas.getContext("2d");
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = "high";
+                ctx.drawImage(img, 0, 0, size, size);
+
+                const pngUrl = canvas.toDataURL("image/png");
+                const fileName = `icon-${size}.png`;
+
+                const link = document.createElement("a");
+                link.className = "dl";
+                link.href = pngUrl;
+                link.download = fileName;
+                link.textContent = `Скачать ${fileName}`;
+
+                card.innerHTML = `<div style="font-weight:600;margin-bottom:8px;">${size} × ${size} px</div>`;
+                card.appendChild(canvas);
+                card.appendChild(link);
+                container.appendChild(card);
+                links.push(link);
+            });
+
+            document.getElementById("downloadAllBtn").addEventListener("click", () => {
+                links.forEach((l, idx) => setTimeout(() => l.click(), idx * 200));
+            });
+
+            URL.revokeObjectURL(svgUrl);
+        };
+
+        img.src = svgUrl;
+    </script>
+</body>
+</html>

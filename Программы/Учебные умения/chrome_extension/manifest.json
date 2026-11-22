@@ -10,9 +10,19 @@
     "tabs"
   ],
   "icons": {
-    "16": "img/icon.png",
-    "48": "img/icon.png",
-    "128": "img/icon.png"
+    "16": "img/icon-16.png",
+    "32": "img/icon-32.png",
+    "48": "img/icon-48.png",
+    "128": "img/icon-128.png"
+  },
+  "action": {
+    "default_title": "МЭШ Ассистент",
+    "default_icon": {
+      "16": "img/icon-16.png",
+      "32": "img/icon-32.png",
+      "48": "img/icon-48.png",
+      "128": "img/icon-128.png"
+    }
   },
   "host_permissions": [
     "https://school.mos.ru/*"
@@ -23,14 +33,7 @@
   "side_panel": {
     "default_path": "sidepanel.html"
   },
-  "action": {
-    "default_title": "МЭШ Ассистент",
-    "default_icon": {
-      "16": "img/icon.png",
-      "48": "img/icon.png"
-    }
-  },
-  "content_scripts": [
+    "content_scripts": [
     {
       "matches": ["https://school.mos.ru/*"],
       "js": ["content.js"],
