@@ -80,7 +80,6 @@
             const menuStyle = window.getComputedStyle(leftMenu);
             const menuBgRgb = parseRgbColor(menuStyle.backgroundColor);
 
-            // Если у самого <aside>/<nav> фон прозрачный, ищем фон внутри контейнера меню
             let effectiveMenuBg = menuBgRgb;
             if (!effectiveMenuBg) {
                 const menuChildren = Array.from(leftMenu.querySelectorAll("div, ul, section"));
@@ -101,7 +100,6 @@
 
             const isMenuDark = getLuminance(effectiveMenuBg) < 0.35;
 
-            // Ищем акцентный цвет активного пункта левого меню (например, «Журналы классов»)
             let activeAccentRgb = null;
             const activeSelectors = [
                 "[aria-current='page']",
@@ -130,7 +128,6 @@
                 if (activeAccentRgb) break;
             }
 
-            // Запасной поиск насыщенного цвета внутри левого меню
             if (!activeAccentRgb) {
                 const menuElems = Array.from(leftMenu.querySelectorAll("a, button, li, div, span"));
                 for (const el of menuElems) {
@@ -155,7 +152,6 @@
                 b: clampChannel(rgb.b + delta)
             });
 
-            // Строим согласованную палитру от цвета левого меню без потери контраста
             const finalBg = isMenuDark
                 ? shiftRgb(effectiveMenuBg, -6)
                 : shiftRgb(effectiveMenuBg, 4);
@@ -210,17 +206,22 @@
     }
 
     function detectJournalContext() {
+        const isMosHost = window.location.hostname === "school.mos.ru";
+        const pathname = window.location.pathname;
+
+        // Конкретный журнал класса: /journal/my/13114858 (или /grade/12345)
+        const onSpecificClassUrl = isMosHost && /\/(?:journal\/my|grade)\/\d+/.test(pathname);
+        // Общий раздел журналов (включая /journal/my)
+        const onJournalSection = isMosHost && (pathname.includes("/journal") || pathname.includes("/grade"));
+
         const classSelector = document.querySelector('[data-test-component="leftControlHeadSelectGroup-selectSingleWrapper"]');
         const hasClassSelector = Boolean(classSelector);
-        const hasStudentRows = document.querySelectorAll("tbody span[title]").length > 0;
-        const onJournalPath =
-            window.location.hostname === "school.mos.ru" &&
-            (window.location.pathname.includes("/journal") || window.location.pathname.includes("/grade"));
 
-        const isClassJournal = hasClassSelector || hasStudentRows || onJournalPath;
+        // Считаем страницей журнала класса только при наличии ID в URL или селектора класса в DOM
+        const isClassJournal = onSpecificClassUrl || (onJournalSection && hasClassSelector);
 
         return {
-            isJournalPage: onJournalPath,
+            isJournalPage: onJournalSection,
             isClassJournal,
             className: hasClassSelector ? classSelector.textContent.trim() : "",
             journalTheme: isClassJournal ? extractJournalTheme() : null
@@ -338,7 +339,7 @@
     }
 
     // =========================================================================
-    // 2. УТИЛИТЫ API И ПЕРЕКЛЮЧЕНИЯ КЛАССОВ
+    // 2. УТИЛИТЫ API, ПАУЗЫ И ПЕРЕКЛЮЧЕНИЯ КЛАССОВ
     // =========================================================================
 
     function getCookie(name) {
@@ -411,6 +412,42 @@
             }
         }
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+    }
+
+    window.meshRobotPaused = false;
+
+    async function waitIfPaused() {
+        while (window.meshRobotPaused && !window.meshRobotStopRequested) {
+            await delay(150);
+        }
+    }
+
+    function closeOpenModalsOnStop() {
+        try {
+            const titleEl = getElementByExactText('div', 'Информация об учащемся');
+            if (titleEl && titleEl.parentElement) {
+                const closeBtn = titleEl.parentElement.querySelector('button');
+                if (closeBtn) closeBtn.click();
+            }
+
+            const explicitClose = getElementByExactText('button', 'Закрыть');
+            if (explicitClose && explicitClose.offsetParent !== null) {
+                explicitClose.click();
+            }
+
+            const ariaCloseButtons = document.querySelectorAll(
+                '[role="dialog"] button[aria-label*="закрыт" i], [role="dialog"] button[aria-label*="close" i], [class*="modal"] button[aria-label*="закрыт" i], [class*="modal"] button[aria-label*="close" i]'
+            );
+            ariaCloseButtons.forEach(btn => {
+                if (btn instanceof HTMLElement && btn.offsetParent !== null) {
+                    btn.click();
+                }
+            });
+
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));
+        } catch (_) {
+            // Безопасно игнорируем, если окон нет
+        }
     }
 
     async function switchToFirstClass() {
@@ -526,6 +563,7 @@
         let skippedCount = 0;
 
         for (let i = 0; i < students.length; i++) {
+            await waitIfPaused();
             if (window.meshRobotStopRequested) {
                 return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
             }
@@ -628,6 +666,10 @@
             console.log(`[МЭШ Ассистент] Выставлено: ${studentName} (ср. ${average.toFixed(2)}, пропуски ${(absenceRatio * 100).toFixed(0)}%)`);
             processedCount++;
             await delay(250);
+            await waitIfPaused();
+            if (window.meshRobotStopRequested) {
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
+            }
         }
 
         return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: false };
@@ -671,6 +713,7 @@
         let skippedCount = 0;
 
         for (let i = 0; i < studentSpans.length; i++) {
+            await waitIfPaused();
             if (window.meshRobotStopRequested) {
                 return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
             }
@@ -840,6 +883,10 @@
 
             processedCount++;
             await delay(800);
+            await waitIfPaused();
+            if (window.meshRobotStopRequested) {
+                return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: true };
+            }
         }
 
         return { processed: processedCount, alreadySet: alreadySetCount, skipped: skippedCount, aborted: false };
@@ -856,6 +903,7 @@
 
         window.isMeshRobotRunning = true;
         window.meshRobotStopRequested = false;
+        window.meshRobotPaused = false;
 
         let globalStats = { processed: 0, alreadySet: 0, skipped: 0, classes: 0 };
 
@@ -907,7 +955,8 @@
                     type: "finish",
                     title: "Остановлено пользователем",
                     summary: summaryText,
-                    isError: true,
+                    isError: false,
+                    isStopped: true,
                     showReload: mode === "background" && globalStats.processed > 0
                 });
             } else {
@@ -931,17 +980,31 @@
         } finally {
             window.isMeshRobotRunning = false;
             window.meshRobotStopRequested = false;
+            window.meshRobotPaused = false;
         }
     }
 
     if (!window.meshRobotListenerAdded) {
         window.meshRobotListenerAdded = true;
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            if (request.action === "start") {
-                runRobot(request.forceRecalc, request.processAll, request.mode);
-            } else if (request.action === "stop") {
+            const action = request?.action || request?.payload?.action;
+            const data = request?.payload || request || {};
+
+            if (action === "start") {
+                runRobot(data.forceRecalc, data.processAll, data.mode);
+            } else if (action === "pause") {
+                if (window.isMeshRobotRunning) {
+                    window.meshRobotPaused = true;
+                    sendPanelUpdate({ type: "paused", isPaused: true });
+                }
+            } else if (action === "resume") {
+                window.meshRobotPaused = false;
+                sendPanelUpdate({ type: "paused", isPaused: false });
+            } else if (action === "stop") {
                 window.meshRobotStopRequested = true;
-            } else if (request.action === "check_context") {
+                window.meshRobotPaused = false;
+                closeOpenModalsOnStop();
+            } else if (action === "check_context") {
                 const ctx = detectJournalContext();
                 reportJournalContext(true);
                 sendResponse?.(ctx);

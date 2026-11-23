@@ -1,15 +1,15 @@
 const lastSyncedStateByTab = new Map();
 
-function isJournalUrl(url = "") {
+function isClassJournalUrl(url = "") {
     return url.startsWith("https://school.mos.ru/") &&
-        (url.includes("/journal") || url.includes("/grade"));
+        /\/(?:journal\/my|grade)\/\d+/.test(url);
 }
 
 function notifyTabContext(tab, force = false) {
     if (!tab?.id) return;
 
     const url = tab.url || "";
-    const onJournal = isJournalUrl(url);
+    const onJournal = isClassJournalUrl(url);
     const cacheKey = `${onJournal}:${url}`;
 
     if (!force && lastSyncedStateByTab.get(tab.id) === cacheKey) {
@@ -65,15 +65,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message?.action === "open_url" && message.url) {
         const targetUrl = message.url;
-        chrome.tabs.query({}, (tabs) => {
+        const targetWindowId = message.windowId;
+        const queryOpts = targetWindowId !== undefined
+            ? { windowId: targetWindowId }
+            : { currentWindow: true };
+
+        chrome.tabs.query(queryOpts, (tabs) => {
             const existing = (tabs || []).find(t => (t.url || "").startsWith(targetUrl));
             if (existing?.id) {
                 chrome.tabs.update(existing.id, { active: true });
-                if (existing.windowId !== undefined) {
-                    chrome.windows.update(existing.windowId, { focused: true }).catch(() => {});
-                }
             } else {
-                chrome.tabs.create({ url: targetUrl, active: true });
+                const createOpts = { url: targetUrl, active: true };
+                if (targetWindowId !== undefined) {
+                    createOpts.windowId = targetWindowId;
+                }
+                chrome.tabs.create(createOpts);
             }
             sendResponse?.({ ok: true });
         });
@@ -118,7 +124,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             chrome.runtime.sendMessage({
                                 target: "sidepanel",
                                 type: "page_context",
-                                isJournalPage: isJournalUrl(tab.url),
+                                isJournalPage: isClassJournalUrl(tab.url),
                                 isClassJournal: false,
                                 className: ""
                             }).catch(() => {});

@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS = {
 };
 
 const notClassJournalHint = document.getElementById("notClassJournalHint");
+const assistantsAccordion = document.getElementById("assistantsAccordion");
 const skillsControls = document.getElementById("skillsControls");
 const fontScaleSlider = document.getElementById("fontScaleSlider");
 const fontScaleBadge = document.getElementById("fontScaleBadge");
@@ -23,7 +24,7 @@ const darkSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
 let currentThemeMode = "mesh";
 let contextRetryTimer = null;
 let isTaskRunning = false;
-let isPanelCollapsed = false;
+let isTaskPaused = false;
 let lastAppliedClassJournal = null;
 
 function setAccordionOpen(btn, body, open) {
@@ -152,18 +153,59 @@ fontScaleSlider?.addEventListener("input", () => {
     applyFontScaleStep(fontScaleSlider.value);
 });
 
+// Создаём карточку-аккордеон для ассистента «Учебные умения»
+const skillsCard = typeof createAssistantCard === "function"
+    ? createAssistantCard({
+        id: "skills",
+        title: "Учебные умения",
+        open: true,
+        onTogglePause: (nextPaused) => {
+            isTaskPaused = Boolean(nextPaused);
+            const action = isTaskPaused ? "pause" : "resume";
+            skillsCard.setPausedState(
+                isTaskPaused,
+                isTaskPaused ? "На паузе" : "Возобновление..."
+            );
+            chrome.runtime.sendMessage({
+                target: "content",
+                payload: { action }
+            });
+        },
+        onStop: () => {
+            isTaskPaused = false;
+            chrome.runtime.sendMessage({
+                target: "content",
+                payload: { action: "stop" }
+            });
+        },
+        onReload: () => {
+            isTaskPaused = false;
+            isTaskRunning = false;
+            skillsCard.hideRunPanel();
+            chrome.runtime.sendMessage({ action: "reload_active_tab" });
+        }
+    })
+    : null;
+
+if (assistantsAccordion && skillsCard) {
+    assistantsAccordion.appendChild(skillsCard.element);
+    if (skillsControls) {
+        skillsCard.refs.settingsSlot.appendChild(skillsControls);
+    }
+}
+
 function applyClassJournalState(isClassJournal) {
     const normalized = Boolean(isClassJournal);
     lastAppliedClassJournal = normalized;
 
     if (normalized) {
-        notClassJournalHint.style.display = "none";
-        skillsControls.style.display = "block";
+        if (notClassJournalHint) notClassJournalHint.style.display = "none";
+        if (assistantsAccordion) assistantsAccordion.style.display = "block";
     } else {
-        notClassJournalHint.style.display = "block";
-        skillsControls.style.display = "none";
+        if (notClassJournalHint) notClassJournalHint.style.display = "block";
+        if (assistantsAccordion) assistantsAccordion.style.display = "none";
         if (!isTaskRunning) {
-            hideBottomPanel();
+            skillsCard?.hideRunPanel();
         }
     }
 }
@@ -193,10 +235,12 @@ function requestPageContextWithRetry(retriesLeft = 3) {
 }
 
 document.querySelectorAll(".link-btn[data-url]").forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
+        const win = await chrome.windows.getCurrent();
         chrome.runtime.sendMessage({
             action: "open_url",
-            url: btn.dataset.url
+            url: btn.dataset.url,
+            windowId: win.id
         });
     });
 });
@@ -266,92 +310,39 @@ document.getElementById("resetSettingsBtn").addEventListener("click", async () =
 });
 
 const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-const reloadBtn = document.getElementById("reloadBtn");
-
-const bottomPanel = document.getElementById("bottomPanel");
-const panelStatus = document.getElementById("panelStatus");
-const panelCollapsibleBody = document.getElementById("panelCollapsibleBody");
-const panelClass = document.getElementById("panelClass");
-const panelStudent = document.getElementById("panelStudent");
-const panelCounter = document.getElementById("panelCounter");
-const panelBar = document.getElementById("panelBar");
-const panelSummary = document.getElementById("panelSummary");
-const panelActions = document.getElementById("panelActions");
-const toggleCollapsePanelBtn = document.getElementById("toggleCollapsePanelBtn");
-
-function applyPanelCollapseState(collapsed) {
-    isPanelCollapsed = Boolean(collapsed);
-    bottomPanel.classList.toggle("collapsed", isPanelCollapsed);
-    if (panelCollapsibleBody) {
-        panelCollapsibleBody.style.display = isPanelCollapsed ? "none" : "block";
-    }
-    if (toggleCollapsePanelBtn) {
-        toggleCollapsePanelBtn.setAttribute("aria-expanded", String(!isPanelCollapsed));
-        toggleCollapsePanelBtn.textContent = isPanelCollapsed ? "▴" : "▾";
-        toggleCollapsePanelBtn.title = isPanelCollapsed ? "Развернуть" : "Свернуть";
-        toggleCollapsePanelBtn.setAttribute(
-            "aria-label",
-            isPanelCollapsed ? "Развернуть блок выполнения" : "Свернуть блок выполнения"
-        );
-    }
-}
-
-toggleCollapsePanelBtn?.addEventListener("click", () => {
-    applyPanelCollapseState(!isPanelCollapsed);
-});
 
 function setRunningState(running) {
     isTaskRunning = running;
-    startBtn.style.display = running ? "none" : "";
-    startBtn.disabled = running;
-
-    if (stopBtn) {
-        stopBtn.style.display = running ? "inline-flex" : "none";
-        stopBtn.disabled = !running;
+    if (!running) {
+        isTaskPaused = false;
     }
+    if (startBtn) {
+        startBtn.style.display = running ? "none" : "";
+        startBtn.disabled = running;
+    }
+    skillsCard?.setRunning(running);
 }
 
-function setPanelBorder(variant) {
-    bottomPanel.classList.remove("neutral", "success", "error");
-    bottomPanel.classList.add("visible", variant);
-}
-
-function hideBottomPanel() {
-    bottomPanel.classList.remove("visible", "neutral", "success", "error", "collapsed");
-    isPanelCollapsed = false;
-    if (panelCollapsibleBody) {
-        panelCollapsibleBody.style.display = "block";
-    }
-    if (toggleCollapsePanelBtn) {
-        toggleCollapsePanelBtn.setAttribute("aria-expanded", "true");
-        toggleCollapsePanelBtn.textContent = "▾";
-        toggleCollapsePanelBtn.title = "Свернуть";
-    }
-    if (stopBtn) {
-        stopBtn.style.display = "none";
-        stopBtn.disabled = true;
-    }
-    panelSummary.classList.remove("visible");
-    panelSummary.textContent = "";
-    panelActions.classList.remove("visible");
-}
-
-startBtn.addEventListener("click", () => {
+startBtn?.addEventListener("click", () => {
     const mode = document.querySelector('input[name="mode"]:checked')?.value || "background";
     const forceRecalc = document.getElementById("forceRecalc").checked;
     const processAll = document.getElementById("processAll").checked;
 
-    applyPanelCollapseState(false);
-    setPanelBorder("neutral");
-    panelStatus.textContent = "Обработка...";
-    panelClass.textContent = "Подготовка...";
-    panelStudent.textContent = "Запуск...";
-    panelCounter.textContent = "0 из 0";
-    panelBar.style.width = "0%";
-    panelSummary.classList.remove("visible");
-    panelSummary.textContent = "";
-    panelActions.classList.remove("visible");
+    isTaskPaused = false;
+
+    if (skillsCard) {
+        skillsCard.setCollapsed(false);
+        skillsCard.showRunPanel("neutral");
+        skillsCard.refs.status.textContent = "Обработка...";
+        skillsCard.refs.className.textContent = "Подготовка...";
+        skillsCard.refs.studentName.textContent = "Запуск...";
+        skillsCard.refs.counter.textContent = "0 из 0";
+        skillsCard.refs.barFill.style.width = "0%";
+        skillsCard.refs.summary.classList.remove("visible");
+        skillsCard.refs.summary.textContent = "";
+        skillsCard.refs.actions.classList.remove("visible");
+    }
+
     setRunningState(true);
 
     chrome.runtime.sendMessage({
@@ -363,20 +354,6 @@ startBtn.addEventListener("click", () => {
             processAll
         }
     });
-});
-
-stopBtn?.addEventListener("click", () => {
-    stopBtn.disabled = true;
-    panelStatus.textContent = "Остановка...";
-    chrome.runtime.sendMessage({
-        target: "content",
-        payload: { action: "stop" }
-    });
-});
-
-reloadBtn.addEventListener("click", () => {
-    hideBottomPanel();
-    chrome.runtime.sendMessage({ action: "reload_active_tab" });
 });
 
 chrome.runtime.onMessage.addListener((msg) => {
@@ -409,32 +386,57 @@ chrome.runtime.onMessage.addListener((msg) => {
         return;
     }
 
+    if (msg.type === "paused") {
+        isTaskPaused = Boolean(msg.isPaused);
+        skillsCard?.setPausedState(
+            isTaskPaused,
+            isTaskPaused ? "На паузе" : "Обработка..."
+        );
+        return;
+    }
+
     if (msg.type === "progress") {
-        setPanelBorder("neutral");
-        panelStatus.textContent = "Обработка...";
-        if (msg.className !== undefined) panelClass.textContent = msg.className;
-        if (msg.studentName !== undefined) panelStudent.textContent = msg.studentName;
+        if (!skillsCard) return;
+        skillsCard.showRunPanel("neutral");
+        if (!isTaskPaused) {
+            skillsCard.setRunning(true);
+            skillsCard.refs.status.textContent = "Обработка...";
+        }
+        if (msg.className !== undefined) skillsCard.refs.className.textContent = msg.className;
+        if (msg.studentName !== undefined) skillsCard.refs.studentName.textContent = msg.studentName;
         if (msg.current !== undefined && msg.total !== undefined) {
-            panelCounter.textContent = `${msg.current} из ${msg.total}`;
+            skillsCard.refs.counter.textContent = `${msg.current} из ${msg.total}`;
             const pct = msg.total > 0 ? Math.min(100, Math.round((msg.current / msg.total) * 100)) : 0;
-            panelBar.style.width = `${pct}%`;
+            skillsCard.refs.barFill.style.width = `${pct}%`;
         }
     } else if (msg.type === "finish" || msg.type === "error") {
-        setRunningState(false);
-        applyPanelCollapseState(false);
-        const isErr = Boolean(msg.isError || msg.type === "error");
+    setRunningState(false);
+    if (!skillsCard) return;
 
-        setPanelBorder(isErr ? "error" : "success");
-        panelStatus.textContent = msg.title || (isErr ? "Ошибка" : "Готово!");
-        if (!isErr) panelBar.style.width = "100%";
+    skillsCard.setCollapsed(false);
+    const isStopped = Boolean(msg.isStopped);
+    const isErr = !isStopped && Boolean(msg.isError || msg.type === "error");
 
-        panelSummary.textContent = msg.summary || "";
-        panelSummary.classList.add("visible");
+    skillsCard.showRunPanel(isErr ? "error" : (isStopped ? "neutral" : "success"));
 
-        if (msg.showReload) {
-            panelActions.classList.add("visible");
-        } else {
-            panelActions.classList.remove("visible");
-        }
+    if (isStopped) {
+        skillsCard.refs.badge.className = "assistant-card-badge is-paused";
+        skillsCard.refs.badge.textContent = "Остановлено";
+    } else if (isErr) {
+        skillsCard.refs.badge.className = "assistant-card-badge is-error";
+        skillsCard.refs.badge.textContent = "Ошибка";
+    } else {
+        skillsCard.refs.badge.className = "assistant-card-badge is-success";
+        skillsCard.refs.badge.textContent = "Готово";
     }
+
+    skillsCard.refs.status.textContent = msg.title || (
+        isStopped ? "Остановлено" : (isErr ? "Ошибка" : "Готово!")
+    );
+    if (!isErr && !isStopped) skillsCard.refs.barFill.style.width = "100%";
+
+    skillsCard.refs.summary.textContent = msg.summary || "";
+    skillsCard.refs.summary.classList.add("visible");
+    skillsCard.refs.actions.classList.add("visible");
+}
 });

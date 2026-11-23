@@ -3,27 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>МЭШ Ассистент</title>
-    <link rel="stylesheet" href="sidepanel.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/panel-base.css">
+    <link rel="stylesheet" href="css/assistant-card.css">
+    <link rel="stylesheet" href="css/settings.css">
 </head>
 <body>
     <div class="top-bar">
-        <span class="app-title">МЭШ Ассистент</span>
+        <span class="app-title">МЭШ Ассистент - тест</span>
         <div class="brand-logo" aria-hidden="true">
             <svg viewBox="0 0 48 48" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Фон иконки -->
                 <rect width="48" height="48" rx="12" fill="var(--primary)"/>
-                <!-- Антенна -->
                 <line x1="24" y1="8.5" x2="24" y2="14" stroke="var(--on-primary)" stroke-width="2.6" stroke-linecap="round"/>
                 <circle cx="24" cy="7" r="2.4" fill="var(--on-primary)" class="bot-antenna-dot"/>
-                <!-- Ушки -->
                 <rect x="7.5" y="21.5" width="3.5" height="8" rx="1.75" fill="var(--on-primary)" opacity="0.85"/>
                 <rect x="37" y="21.5" width="3.5" height="8" rx="1.75" fill="var(--on-primary)" opacity="0.85"/>
-                <!-- Голова робота -->
                 <rect x="12" y="14.5" width="24" height="21" rx="6.5" stroke="var(--on-primary)" stroke-width="2.6"/>
-                <!-- Глаза (увеличенные, подмигивает левый) -->
                 <circle cx="19.3" cy="24" r="2.8" fill="var(--on-primary)" class="bot-eye-wink"/>
                 <circle cx="28.7" cy="24" r="2.8" fill="var(--on-primary)" class="bot-eye"/>
-                <!-- Улыбка -->
                 <path d="M19.5 30C20.8 31.4 27.2 31.4 28.5 30" stroke="var(--on-primary)" stroke-width="2.3" stroke-linecap="round"/>
             </svg>
         </div>
@@ -58,6 +55,8 @@
                 </button>
             </div>
         </div>
+
+        <div id="assistantsAccordion"></div>
 
         <div id="skillsControls">
             <div class="section-label">Режим работы</div>
@@ -99,7 +98,6 @@
     <div id="tab-settings" class="tab-pane">
         <div class="settings-group-header">Настройки оформления</div>
 
-        <!-- Аккордеон 1: Тема оформления -->
         <div class="card">
             <button
                 type="button"
@@ -130,7 +128,6 @@
             </div>
         </div>
 
-        <!-- Аккордеон 2: Размер шрифта -->
         <div class="card">
             <button
                 type="button"
@@ -175,7 +172,6 @@
 
         <div class="settings-group-header">Настройки ассистента</div>
 
-        <!-- Аккордеон 3: Навыки и умения -->
         <div class="card">
             <button
                 type="button"
@@ -259,48 +255,15 @@
         <div id="saveStatus" class="save-status"></div>
     </div>
 
-    <!-- НИЖНИЙ ЕДИНЫЙ БЛОК ПРОГРЕССА И ИТОГА -->
-    <div id="bottomPanel" class="bottom-panel neutral">
-        <div class="panel-top">
-            <span id="panelStatus" class="panel-status">Выполняется...</span>
-            <div class="panel-top-controls">
-                <button id="stopBtn" class="btn btn-danger btn-compact" style="display:none;">Стоп</button>
-                <button
-                    type="button"
-                    id="toggleCollapsePanelBtn"
-                    class="panel-collapse-btn"
-                    aria-expanded="true"
-                    aria-label="Свернуть блок выполнения"
-                    title="Свернуть"
-                >▾</button>
-            </div>
-        </div>
-
-        <div id="panelCollapsibleBody" class="panel-collapsible-body">
-            <div id="panelClass" class="panel-class">Подготовка...</div>
-            <div class="panel-meta">
-                <span id="panelStudent" class="panel-student">—</span>
-                <span id="panelCounter" class="panel-counter">0 из 0</span>
-            </div>
-        </div>
-
-        <div class="bar-track">
-            <div id="panelBar" class="bar-fill"></div>
-        </div>
-
-        <div id="panelSummary" class="panel-summary"></div>
-        <div id="panelActions" class="panel-actions">
-            <button id="reloadBtn" class="btn btn-secondary" style="width:100%;">
-                Обновить страницу
-            </button>
-        </div>
-    </div>
+    <!-- Резервный блок скрыт — управление и прогресс перенесены в аккордеон ассистента -->
+    <div id="bottomPanel" class="bottom-panel neutral" style="display:none;"></div>
 
     <footer class="panel-footer">
         <span>Автор:</span>
         <span class="panel-footer-author">Александр Ермаков</span>
     </footer>
 
+    <script src="assistant-card.js"></script>
     <script src="sidepanel.js"></script>
 </body>
 </html>
